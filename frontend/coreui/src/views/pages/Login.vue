@@ -1,6 +1,6 @@
 <template>
 <div>
-    <bounce-spinner v-if="isLoading"></bounce-spinner>
+  <bounce-spinner v-if="isLoading"></bounce-spinner>
   <div class="app flex-row align-items-center" v-if="isProcess">
     <div class="container">
       <b-row class="justify-content-center">
@@ -20,7 +20,8 @@
             <b-card no-body class="p-4">
               <b-card-body>
                 <b-form>
-                  <h1>Login</h1>
+                 <!-- <p style="text-align:center;"><img src="img/brand/logo.png" width="150" height="55" alt="CoreUI Logo"><p> -->
+                  <h1 style="text-align:center;">Login</h1>
                   <p class="text-muted">Login with yout account</p>
                   <b-input-group class="mb-3">
                     <b-input-group-prepend><b-input-group-text><i class="icon-user"></i></b-input-group-text></b-input-group-prepend>
@@ -32,21 +33,21 @@
                   </b-input-group>
                   <b-row>
                     <b-col cols="6">
-                      <b-button variant="warning" class="px-4" @click="checkForm">Login</b-button>
+                      <b-button variant="success" class="px-4" @click="checkForm">Login</b-button>
                     </b-col>
                     <b-col cols="6" class="text-right">
-                      <b-button variant="link" class="px-0">Forgot password?</b-button>
+                      <!--<b-button variant="link" class="px-0">Forgot password?</b-button>-->
                     </b-col>
                   </b-row>
                 </b-form>
               </b-card-body>
             </b-card>
-            <b-card no-body class="text-white bg-warning py-5">
+            <b-card no-body class="text-white bg-info py-5">
               <b-card-body class="text-center">
                 <div>
                   <h2>Sign up</h2>
                   <p>You feel you don't have an account? You must register your account first</p>
-                  <b-button variant="primary" class="active mt-3" @click="toRegis">Register now!</b-button>
+                  <b-button variant="success" class="active mt-3" @click="toRegis">Register now!</b-button>
                 </div>
               </b-card-body>
             </b-card>

@@ -120,7 +120,7 @@ const tanamanRepositories = {
       var payload = {
         notification: {
           title: tanamanInform.namaTanaman + " is abnormal !!",
-          body: "Please open yours Seecow App and let's check your cows.."
+          body: "Please open yours Plant App and let's check your cows.."
         }
       };
       
@@ -231,23 +231,23 @@ const tanamanRepositories = {
         if(saveTanaman){
           return saveTanaman
         }
-        // if(saveTanaman){
-        //   let createOnRaspi = await ConnectRaspi.createInitial(saveTanaman._id)
-        //   if(createOnRaspi){
-        //     let updateTanaman = await 
-        //     Tanaman.update({
-        //       _id: saveTanaman._id
-        //     },{
-        //       $set: {
-        //         "perangkat.idOnRaspi": createOnRaspi.data.perangkat._id
-        //       }
-        //     }
-        //   )
-        //   if(updateTanaman){
-        //     return createOnRaspi.data
-        //   }
-        //  }
-        // }
+        if(saveTanaman){
+          let createOnRaspi = await ConnectRaspi.createInitial(saveTanaman._id)
+          if(createOnRaspi){
+            let updateTanaman = await 
+            Tanaman.update({
+              _id: saveTanaman._id
+            },{
+              $set: {
+                "perangkat.idOnRaspi": createOnRaspi.data.perangkat._id
+              }
+            }
+          )
+          if(updateTanaman){
+            return createOnRaspi.data
+          }
+         }
+        }
      
     }
   },

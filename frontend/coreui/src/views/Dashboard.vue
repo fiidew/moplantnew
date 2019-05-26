@@ -1,17 +1,19 @@
 <template>
 <div>
-    <bounce-spinner v-if="isLoading"></bounce-spinner>
-  <div class="animated fadeIn" v-if="isLoading==false">
+<!--  <bounce-spinner v-if="isLoading"></bounce-spinner>
+  <div class="animated fadeIn" v-if="isLoading==false"> -->
   
-    <b-row>
+   <b-row>
       <b-alert show variant="success" v-if="successAlert.length > 0">
               <h4 class="alert-heading">Congratulation !</h4>
               <ul>
                 <li v-for="item in successAlert" :key="item">{{ item }}</li>
-              </ul>
-              
+              </ul>    
       </b-alert>
-      <b-col sm="6" lg="6">
+    </b-row>
+    <b-row>
+      <!--
+      <b-col sm="6" lg="3">
         <b-card  bg-variant="info" text-variant="white">
           <h1 class="card-text">
             {{DeviceActive}} 
@@ -20,25 +22,98 @@
         </b-card>
        
       </b-col>
-      <b-col sm="6" lg="6">
-        <b-card  bg-variant="danger" text-variant="white">
+      <b-col sm="6" lg="3">
+        <b-card  bg-variant="success" text-variant="white">
           <h1 class="card-text">
             {{DeviceNonActive}}
           </h1>
           <p>Nonactive Device</p>
         </b-card>
-
       </b-col>
+      -->
+      
+      <b-col sm="3" lg="3">
+        <b-card no-body class="bg-primary">
+          <b-card-body class="pb-0">
+            <b-dropdown class="float-right" variant="transparent p-0" right>
+              <template slot="button-content">
+                <i class="icon-settings"></i>
+              </template>
+              <b-dropdown-item>Action</b-dropdown-item>
+              <b-dropdown-item>Another action</b-dropdown-item>
+              <b-dropdown-item>Something else here...</b-dropdown-item>
+              <b-dropdown-item disabled>Disabled action</b-dropdown-item>
+            </b-dropdown>
+            <h4 class="mb-0">{{Average_Soil_Moisture}} %RH</h4>
+            <p>Average Soil Moisture</p>
+          </b-card-body>
+          <card-line1-chart-example chartId="card-chart-01" class="chart-wrapper px-3" style="height:70px;" :height="70"/>
+        </b-card>
+      </b-col>
+      <b-col sm="3" lg="3">
+        <b-card no-body class="bg-info">
+          <b-card-body class="pb-0">
+            <b-dropdown class="float-right" variant="transparent p-0" right no-caret>
+              <template slot="button-content">
+                <i class="icon-location-pin"></i>
+              </template>
+              <b-dropdown-item>Action</b-dropdown-item>
+              <b-dropdown-item>Another action</b-dropdown-item>
+              <b-dropdown-item>Something else here...</b-dropdown-item>
+              <b-dropdown-item disabled>Disabled action</b-dropdown-item>
+            </b-dropdown>
+            <h4 class="mb-0">{{Average_Temperature}} C</h4>
+            <p>Average Temperature</p>
+          </b-card-body>
+          <card-line2-chart-example chartId="card-chart-02" class="chart-wrapper px-3" style="height:70px;" :height="70"/>
+        </b-card>
+      </b-col>
+      <b-col sm="3" lg="3">
+        <b-card no-body class="bg-warning">
+          <b-card-body class="pb-0">
+            <b-dropdown class="float-right" variant="transparent p-0" right>
+              <template slot="button-content">
+                <i class="icon-settings"></i>
+              </template>
+              <b-dropdown-item>Action</b-dropdown-item>
+              <b-dropdown-item>Another action</b-dropdown-item>
+              <b-dropdown-item>Something else here...</b-dropdown-item>
+              <b-dropdown-item disabled>Disabled action</b-dropdown-item>
+            </b-dropdown>
+            <h4 class="mb-0">{{Average_Humidity}}</h4>
+            <p>Average Humidity</p>
+          </b-card-body>
+          <card-line3-chart-example chartId="card-chart-03" class="chart-wrapper" style="height:70px;" height="70"/>
+        </b-card>
+      </b-col>
+      <b-col sm="3" lg="3">
+        <b-card no-body class="bg-danger">
+          <b-card-body class="pb-0">
+            <b-dropdown class="float-right" variant="transparent p-0" right>
+              <template slot="button-content">
+                <i class="icon-settings"></i>
+              </template>
+              <b-dropdown-item>Action</b-dropdown-item>
+              <b-dropdown-item>Another action</b-dropdown-item>
+              <b-dropdown-item>Something else here...</b-dropdown-item>
+              <b-dropdown-item disabled>Disabled action</b-dropdown-item>
+            </b-dropdown>
+            <h4 class="mb-0">{{Area}}</h4>
+            <p>area</p>
+          </b-card-body>
+          <card-bar-chart-example chartId="card-chart-04" class="chart-wrapper px-3" style="height:70px;" height="70"/>
+        </b-card>
+      </b-col>
+      
     </b-row>
 
     <b-row>
       <b-col md="12">
-        <b-card header="Cow List" class="card-accent-warning">
+        <b-card header="Plant List" class="card-accent-danger">
            <div slot="header">
-              <b>Cow List</b>
+              <b>Plant List</b>
               <div class="card-header-actions">
-                <b-button type="button" variant="warning" @click="showModal" class="mr-1">Register Cow</b-button>
-             
+                <b-button type="button" variant="danger" @click="showModal" class="mr-1">Register Plant</b-button>
               </div>
           </div>
           <b-row>        
@@ -48,13 +123,13 @@
                   <Callout variant="info">
                     <b-row>
                       <b-col sm="12" lg="6">
-                        <small class="text-muted">Temperature Average</small><br>
-                        <strong class="h4">{{ TemperatureAverage }}</strong>
+                        <small class="text-muted">SoilMoisture Average</small><br>
+                        <strong class="h4">{{ SoilMoistureAverage }}</strong>
                       </b-col>
                       <b-col sm="12" lg="6">
                     <!-- <div class="chart-wrapper"> -->
                       <!--<callout-chart-example :data="[35, 23, 56, 22, 97, 23, 64]" variant="#20a8d8" width="80" height="30" />-->
-                        <callout-chart-example chartId="callout-chart-01" :labels="labelsData" :data="TemperatureGraph" variant="info" width="80" height="30" />
+                        <callout-chart-example chartId="callout-chart-01" :labels="labelsData" :data="SoilMoistureGraph" variant="info" width="80" height="30" />
                     <!-- </div> -->
                       </b-col>
                     </b-row>
@@ -64,12 +139,12 @@
                   <Callout variant="danger">
                     <b-row>
                       <b-col sm="12" lg="6">
-                        <small class="text-muted">Heart Rate Average</small><br>
-                        <strong class="h4">{{HeartRateAverage}}</strong>
+                        <small class="text-muted">Ph Average</small><br>
+                        <strong class="h4">{{PhAverage}}</strong>
                       </b-col>
                       <b-col sm="12" lg="6">
                         <!-- <div class="chart-wrapper"> -->
-                        <callout-chart-example chartId="callout-chart-02" :labels="labelsData" :data="HeartGraph" variant="danger" width="80" height="30" />
+                        <callout-chart-example chartId="callout-chart-02" :labels="labelsData" :data="PhGraph" variant="danger" width="80" height="30" />
                         <!-- </div> -->
                       </b-col>
                     </b-row>
@@ -79,15 +154,16 @@
               <hr class="mt-0">
              </b-col>
           </b-row>
+          
           <b-row>
             <b-table striped outlined stacked="sm" hover :items="tableItems" :fields="tableFields" head-variant="light"  v-if="existingData == true">
-            <div slot="namaSapi" slot-scope="data">
+            <div slot="namaTanaman" slot-scope="data">
               <img src="img/cow/cow (2).png" width="50px" alt="cows logo">
               <strong>{{data.value}}</strong>
               <b-link class="card-header-action btn-minimize" v-b-toggle.collapse1>
                   <i v-bind:id="data.item._id" class="icon-eye"></i>
               </b-link>
-              <b-popover v-bind:target="data.item._id" title="Cow ID">
+              <b-popover v-bind:target="data.item._id" title="Plant ID">
                 <!-- <strong>{{data.item._id}}</strong> -->
                 <h5><b-badge variant="secondary">{{data.item.perangkat.idOnRaspi}}</b-badge></h5>
               </b-popover>
@@ -100,14 +176,14 @@
               <b-badge :variant="dateFormatter(data.item.perangkat.data[data.item.perangkat.data.length-1].tanggal)">{{data.item.perangkat.data[data.item.perangkat.data.length-1].tanggal | formatDate}}</b-badge>
               
             </div>
-            <div slot="key-suhu" slot-scope="data">
+            <div slot="key-kelembaban" slot-scope="data">
               
-              <strong>{{data.item.perangkat.data[data.item.perangkat.data.length-1].suhu.toFixed(2)}}</strong>
+              <strong>{{data.item.perangkat.data[data.item.perangkat.data.length-1].kelembaban.toFixed(2)}}</strong>
               <div class="small text-muted">Celcius</div>
             </div>
-            <div slot="key-jantung" slot-scope="data">
+            <div slot="key-ph" slot-scope="data">
               
-              <strong>{{data.item.perangkat.data[data.item.perangkat.data.length-1].jantung.toFixed(2)}}</strong>
+              <strong>{{data.item.perangkat.data[data.item.perangkat.data.length-1].ph.toFixed(2)}}</strong>
               <div class="small text-muted">BPM</div>
             </div>
             <div slot="key-status" slot-scope="data">
@@ -123,7 +199,7 @@
             
           </b-row> 
             <b-alert v-if="existingData == false" show variant="warning">
-              You don't have a cow in our system, let's manage your first cow by clicking the register cow button.
+              You don't have a plant in our system, let's manage your first plant by clicking the register plant button.
             </b-alert>
         </b-card>
       </b-col>
@@ -142,10 +218,10 @@
               </p>
           </b-alert>
         <b-form-group>
-          <b-form-input type="text" id="name" v-model="cowName" placeholder="Enter your cow ID or name"></b-form-input>
+          <b-form-input type="text" id="name" v-model="plantName" placeholder="Enter your plant ID or name"></b-form-input>
         </b-form-group>
       </div>
-      <b-btn class="mt-3" variant="outline-warning" block @click="createCow">Register</b-btn>
+      <b-btn class="mt-3" variant="outline-warning" block @click="createPlant">Register</b-btn>
     </b-modal>
 
 
@@ -195,31 +271,34 @@ export default {
     return {
       isLoading: true,
       DeviceActive:0,
-      cowName:"",
+      Average_Soil_Moisture:30,
+      Average_Temperature:50,
+      Average_Humidity:20,
+      Area:40,
+      plantName:"",
       socket : io(Constants.SOCKET_SERVER),
       warningModal: false,
       DeviceNonActive:0,
-      TemperatureAverage:0,
-      HeartRateAverage:0,
-      TemperatureGraph:[],
-      HeartGraph:[],
+      SoilMoistureAverage:0,
+      PhRateAverage:0,
+      SoilMoistureGraph:[],
+      PhGraph:[],
       labelsData:[],
       CurrentConditions:"",
-      suhuArrange:[],
+      kelembabanArrange:[],
       statusDeviceInStr:"",
       dateOnFormat:"",
       dateOnFormatForAvg:"",
       existingData:false,
-      sapiList:[],
+      tanamanList:[],
       selected: 'Month',
       tableItems: [],
       errors: [],
       successAlert: [],
       tableFields: [
         {
-          key:'namaSapi',
-          label: 'Cow ID'
-          
+          key:'namaTanaman',
+          label: 'Plant ID'
         },
         {
           key:'key-kondisi',
@@ -228,11 +307,11 @@ export default {
         { key: 'key-tanggal', 
           label: 'Time' 
         },
-        { key: 'key-suhu', 
-          label: 'Temperature' 
+        { key: 'key-kelembaban', 
+          label: 'Soil Moisture' 
         },
-        { key: 'key-jantung', 
-          label: 'Heart Rate' 
+        { key: 'key-ph', 
+          label: 'Ph' 
         },
         { key: 'key-status', 
           label: 'Device Status'
@@ -250,42 +329,41 @@ export default {
   },
   created(){
       this.checkSession();
-     
   },
+
   methods: {
     showModal () {
       /**
-       * this function for show create cow form on modal
+       * this function for show create plant form on modal
        */
       this.errors = []
       this.$refs.myModalRef.show()
     },
-    async postCreateCowData() {
+    async postCreatePlantData() {
       /**
-       * post create cow data
+       * post create plant data
        */
       this.successAlert = []
-      const response = await PostsService.createCow(window.localStorage.getItem("token"),{
-                          namaSapi: this.cowName
+      const response = await PostsService.createPlant(window.localStorage.getItem("token"),{
+                          namaTanaman: this.plantName
                         });
       this.$refs.myModalRef.hide()
       if(response.data.status){
-        this.successAlert.push('Congratulation,You have successfully register a new cow, our team will prepare your device, please refresh this page');
+        this.successAlert.push('Congratulation,You have successfully register a new plant, our team will prepare your device, please refresh this page');
       }
       // setTimeout(location.reload(), 5000)
       
     },
-    createCow() {
+    createPlant() {
       /**
-       * this function for action when register cow button on clik
+       * this function for action when register plant button on clik
        */
-      if(this.cowName){
-        
-        this.postCreateCowData()
+      if(this.plantName){ 
+        this.postCreatePlantData()
       }
       this.errors = []
-      if(!this.cowName){
-        this.errors.push('cow ID cant blank !');
+      if(!this.plantName){
+        this.errors.push('plant ID cant blank !');
       }
      
     },
@@ -326,12 +404,12 @@ export default {
       return response.data;
     },
     soket(){
-      this.socket.on('/topic/cows/'+window.localStorage.getItem("peternak_id"), (tanamanData) => {
+      this.socket.on('/topic/plants/'+window.localStorage.getItem("farmer_id"), (tanamanData) => {
             this.tableItems = tanamanData;
-            var active =0,inActive =0,avgSuhu=0,avgHeart=0;
+            var active =0,inActive =0,avgKelembaban=0,avgPh=0;
             for(var i=0;i<tanamanData.length;i++){
-            avgSuhu += Number(tanamanData[i].perangkat.data[tanamanData[i].perangkat.data.length-1].suhu);
-            avgHeart += Number(tanamanData[i].perangkat.data[tanamanData[i].perangkat.data.length-1].jantung);
+            avgKelembaban += Number(tanamanData[i].perangkat.data[tanamanData[i].perangkat.data.length-1].kelembaban);
+            avgPh += Number(tanamanData[i].perangkat.data[tanamanData[i].perangkat.data.length-1].ph);
             this.dateFormatter(tanamanData[i].perangkat.data[tanamanData[i].perangkat.data.length-1].tanggal);
             if(tanamanData[i].perangkat.status == 1){
               active++;
@@ -339,31 +417,31 @@ export default {
               inActive++;
             }
           }
-          avgSuhu = avgSuhu/tanamanData.length;
-          avgHeart = avgHeart/tanamanData.length;
+          avgKelembaban = avgKelembaban/tanamanData.length;
+          avgPh = avgPh/tanamanData.length;
           this.tableItems = tanamanData;
           this.DeviceActive = active;
           this.DeviceNonActive = inActive;
-          this.TemperatureAverage = avgSuhu.toFixed(2);
-          this.HeartRateAverage = avgHeart.toFixed(2);
+          this.SoilMoistureAverage = avgKelembaban.toFixed(2);
+          this.PhRateAverage = avgPh.toFixed(2);
           // chart operation
-          this.HeartGraph.push(this.HeartRateAverage);
-          this.TemperatureGraph.push(this.TemperatureAverage);
+          this.PhGraph.push(this.PhRateAverage);
+          this.SoilMoistureGraph.push(this.SoilMoistureAverage);
           this.labelsData.push(this.dateOnFormat)
             
       });
     },
     async firstLoad(){
       // console.log(window.localStorage.getItem("token"));
-      const response = await this.fetchDatatanaman();
+      const response = await this.fetchDataTanaman();
       let tanamanData = response.data;
       this.isLoading=false
       if(tanamanData.length > 0){
           this.existingData = true
-          var active =0,inActive =0,avgSuhu=0,avgHeart=0;
+          var active =0,inActive =0,avgKelembaban=0,avgPh=0;
           for(var i=0;i<tanamanData.length;i++){
-            avgSuhu += Number(tanamanData[i].perangkat.data[tanamanData[i].perangkat.data.length-1].suhu);
-            avgHeart += Number(tanamanData[i].perangkat.data[tanamanData[i].perangkat.data.length-1].jantung);
+            avgKelembaban += Number(tanamanData[i].perangkat.data[tanamanData[i].perangkat.data.length-1].kelembaban);
+            avgPh += Number(tanamanData[i].perangkat.data[tanamanData[i].perangkat.data.length-1].ph);
             this.dateFormatter(tanamanData[i].perangkat.data[tanamanData[i].perangkat.data.length-1].tanggal);
             if(tanamanData[i].perangkat.status == 1){
               active++;
@@ -371,18 +449,18 @@ export default {
               inActive++;
             }
           }
-          avgSuhu = avgSuhu/tanamanData.length;
-          avgHeart = avgHeart/tanamanData.length;
+          avgKelembaban = avgKelembaban /tanamanData.length;
+          avgPh = avgPh/tanamanData.length;
           this.tableItems = tanamanData;
           this.DeviceActive = active;
           this.DeviceNonActive = inActive;
-          this.TemperatureAverage = avgSuhu.toFixed(2);
-          this.HeartRateAverage = avgHeart.toFixed(2);
+          this.SoilMoistureAverage = avgKelembaban.toFixed(2);
+          this.PhAverage = avgPh.toFixed(2);
           // chart operation
-          this.HeartGraph.push(this.HeartRateAverage);
-          this.TemperatureGraph.push(this.TemperatureAverage);
+          this.PhGraph.push(this.PhAverage);
+          this.SoilMoistureGraph.push(this.SoilMoistureAverage);
           this.labelsData.push(this.dateOnFormat)
-          // this.TemperatureGraph = [1,2,3,4,5,6,7]
+          // this.SoilMoistureGraph = [1,2,3,4,5,6,7]
           // this.labelsData = [1,2,3,4,5,6,7]
           this.soket();
       }else{
@@ -438,7 +516,7 @@ export default {
   #card-chart-01, #card-chart-02 {
     width: 100% !important;
   }
-  .list-sapi-header{
+  .list-tanaman-header{
     color:white;
   }
   .brand-card-header{

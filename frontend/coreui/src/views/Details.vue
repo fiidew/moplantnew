@@ -6,7 +6,7 @@
     <b-card>
       <b-row>
         <b-col sm="5">
-          <h4><img src="img/cow/cow (2).png" width="50px" alt="CoreUI Logo"> {{nameOfCow}}</h4>
+          <h4><img src="img/cow/cow (2).png" width="50px" alt="CoreUI Logo"> {{nameOfPlant}}</h4>
           <!-- <h4 id="traffic" class="card-title mb-0">Graph</h4> -->
           <!-- <div class="small text-muted">{{dateOnFormat}}</div> -->
           <b-badge v-bind:variant="conditions">{{CurrentConditions}}</b-badge> | 
@@ -24,18 +24,18 @@
         </b-col>
       </b-row>
       <bounce-spinner v-if="isLoading"></bounce-spinner>
-      <line-chart v-if="isProcess" :labels="labelsData" :dataheart="dataChartHeart" :datatemperature="dataChartTemp" :dataheartlimit="dataChartHeartLimit" :datatemperaturelimit="dataChartTemperatureLimit" :temperatureupperlimit="dataChartTemperatureUpperLimit" :heartupperlimit="dataChartHeartUpperLimit" :options="{responsive: true, maintainAspectRatio: false}"></line-chart>
+      <line-chart v-if="isProcess" :labels="labelsData" :dataph="dataChartPh" :datakelembaban="dataChartSoilMoisture" :dataphlimit="dataChartPhLimit" :datasoilmoisturelimit="dataChartSoilMoistureLimit" :soilmoistureupperlimit="dataChartSoilMoistureUpperLimit" :phupperlimit="dataChartPhUpperLimit" :options="{responsive: true, maintainAspectRatio: false}"></line-chart>
       <div slot="footer">
         <b-row class="text-center">
           <b-col class="mb-sm-6 mb-0">
-            <div class="text-muted">Temperature</div>
-            <strong>{{currentTemp}}</strong>
+            <div class="text-muted">Soil Moisture</div>
+            <strong>{{currentSoilMoisture}}</strong>
              <b-progress height={} class="progress-xs mt-2" :precision="1" v-bind:value="100"></b-progress>
           </b-col>
          
           <b-col class="mb-sm-6 mb-0">
-            <div class="text-muted">Heart Rate</div>
-            <strong>{{currentHeart}}</strong>
+            <div class="text-muted">Ph</div>
+            <strong>{{currentPh}}</strong>
               <b-progress height={} class="progress-xs mt-2" :precision="1" variant="danger" v-bind:value="100"></b-progress>
           </b-col>
           
@@ -52,14 +52,14 @@
               <b-badge :variant="getKondisi(data.item.kondisi)">{{data.item.kondisi == 0 ? "Abnormal":"Normal"}}</b-badge>
             </div>
             
-            <div slot="key-suhu" slot-scope="data">
+            <div slot="key-kelembaban" slot-scope="data">
               
-              <strong>{{data.item.suhu.toFixed(2)}}</strong>
+              <strong>{{data.item.kelembaban.toFixed(2)}}</strong>
               <div class="small text-muted">Celcius</div>
             </div>
-            <div slot="key-jantung" slot-scope="data">
+            <div slot="key-ph" slot-scope="data">
               
-              <strong>{{data.item.jantung.toFixed(2)}}</strong>
+              <strong>{{data.item.ph.toFixed(2)}}</strong>
               <div class="small text-muted">BPM</div>
             </div>
              <div slot="key-tanggal" slot-scope="data">
@@ -153,23 +153,23 @@ export default {
       totalRows: 0,
       page:1,
       tableItemsLength:0,
-      dataChartHeart: [],
-      dataChartTemp: [],
-      dataChartHeartLimit:[],
-      dataChartHeartUpperLimit:[],
-      dataChartTemperatureLimit:[],
-      dataChartTemperatureUpperLimit:[],
+      dataChartPh: [],
+      dataChartSoilMoisture: [],
+      dataChartPhLimit:[],
+      dataChartPhUpperLimit:[],
+      dataChartSoilMoistureLimit:[],
+      dataChartSoilMoistureUpperLimit:[],
       labelsData:[],
       statusDeviceInStr:"",
       statusDevice:"",
       conditions:"",
       test: [4, 4, 4, 4, 4, 4],
-      nameOfCow:"",
+      nameOfPlant:"",
       socket : io('206.189.36.70:3001'),
       CurrentConditions:"",
       dateOnFormat:"",
-      currentTemp:0,
-      currentHeart:0,
+      currentSoilMoisture:0,
+      currentPh:0,
       tableItems: [],
       tableFields: [
         
@@ -177,11 +177,11 @@ export default {
           key:'key-kondisi',
           label:'Condition'
         },
-        { key: 'key-suhu', 
-          label: 'Temperature' 
+        { key: 'key-kelembaban', 
+          label: 'SoilMoisture' 
         },
-        { key: 'key-jantung', 
-          label: 'Heart Rate' 
+        { key: 'key-ph', 
+          label: 'Ph' 
         },
         { key: 'key-tanggal', 
           label: 'Time' 
@@ -217,56 +217,56 @@ export default {
         
       }
     },
-    async fetchDataSapi(){
-      const response = await PostsService.getSapiDetail(window.localStorage.getItem("token"),this.$route.params.id);
+    async fetchDataTanaman(){
+      const response = await PostsService.getTanamanDetail(window.localStorage.getItem("token"),this.$route.params.id);
       return response.data;
     },
     async fetchDataToday(){
       const response = await PostsService.getDataToday(window.localStorage.getItem("token"),{
-                          idSapi: this.$route.params.id
+                          idTanaman: this.$route.params.id
                         });
       return response.data;
     },
     async fetchDataInTime(){
       const response = await PostsService.getDataInTime(window.localStorage.getItem("token"),{
-                          idSapi: this.$route.params.id,
+                          idTanaman: this.$route.params.id,
                           start : this.startDate,
                           end: this.endDate
                         });
       return response.data;
     },
     soket(){
-      this.socket.on('/topic/cows/detail/'+this.$route.params.id, (sapiData) => {
-        // this.tableItems = sapiData.perangkat.data;
-        this.currentTemp = sapiData.perangkat.data[sapiData.perangkat.data.length-1].suhu.toFixed(2);
-        this.currentHeart = sapiData.perangkat.data[sapiData.perangkat.data.length-1].jantung.toFixed(2);
-        this.getBadge(sapiData.perangkat.status);
-        this.getKondisi(sapiData.perangkat.data[sapiData.perangkat.data.length-1].kondisi);
-        this.dateFormatter(sapiData.perangkat.data[sapiData.perangkat.data.length-1].tanggal);
+      this.socket.on('/topic/plants/detail/'+this.$route.params.id, (tanamanData) => {
+        // this.tableItems = tanamanData.perangkat.data;
+        this.currentSoilMoisture = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kelembaban.toFixed(2);
+        this.currentPh = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].ph.toFixed(2);
+        this.getBadge(tanamanData.perangkat.status);
+        this.getKondisi(tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kondisi);
+        this.dateFormatter(tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].tanggal);
         // Chart operation
-        if(this.dataChartHeart.length > 120){
-          this.dataChartHeart.shift();
-          this.dataChartTemp.shift();
-          this.dataChartHeartLimit.shift();
-          this.dataChartHeartUpperLimit.shift();
-          this.dataChartTemperatureLimit.shift();
-          this.dataChartTemperatureUpperLimit.shift();
+        if(this.dataChartPh.length > 120){
+          this.dataChartPh.shift();
+          this.dataChartSoilMoisture.shift();
+          this.dataChartPhLimit.shift();
+          this.dataChartPhUpperLimit.shift();
+          this.dataChartSoilMoistureLimit.shift();
+          this.dataChartSoilMoistureUpperLimit.shift();
           this.labelsData.shift();
 
-          this.dataChartHeart.push(this.currentHeart);
-          this.dataChartTemp.push(this.currentTemp);
-          this.dataChartHeartLimit.push(48);
-          this.dataChartHeartUpperLimit.push(80);
-          this.dataChartTemperatureLimit.push(37);
-          this.dataChartTemperatureUpperLimit.push(39);
+          this.dataChartPh.push(this.currentPh);
+          this.dataChartSoilMoisture.push(this.currentSoilMoisture);
+          this.dataChartPhLimit.push(48);
+          this.dataChartPhUpperLimit.push(80);
+          this.dataChartSoilMoistureLimit.push(37);
+          this.dataChartSoilMoistureUpperLimit.push(39);
           this.labelsData.push(this.dateOnFormat);
         }else{
-          this.dataChartHeart.push(this.currentHeart);
-          this.dataChartTemp.push(this.currentTemp);
-          this.dataChartHeartLimit.push(48);
-          this.dataChartHeartUpperLimit.push(80);
-          this.dataChartTemperatureLimit.push(37);
-          this.dataChartTemperatureUpperLimit.push(39);
+          this.dataChartPh.push(this.currentPh);
+          this.dataChartSoilMoisture.push(this.currentSoilMoisture);
+          this.dataChartPhLimit.push(48);
+          this.dataChartPhUpperLimit.push(80);
+          this.dataChartSoilMoistureLimit.push(37);
+          this.dataChartSoilMoistureUpperLimit.push(39);
           this.labelsData.push(this.dateOnFormat);
         }
         
@@ -276,55 +276,55 @@ export default {
     },
     
     async firstLoad(){
-      this.dataChartHeart= []
-      this.dataChartTemp=[]
-      this.dataChartHeartLimit=[]
-      this.dataChartHeartUpperLimit=[]
-      this.dataChartTemperatureLimit=[]
-      this.dataChartTemperatureUpperLimit=[]
+      this.dataChartPh= []
+      this.dataChartSoilMoisture=[]
+      this.dataChartPhLimit=[]
+      this.dataChartPhUpperLimit=[]
+      this.dataChartSoilMoistureLimit=[]
+      this.dataChartSoilMoistureUpperLimit=[]
       this.labelsData=[]
       this.tableItems=[]
       const response = await this.fetchDataToday();
-      let sapiData = response.data[0]; //because response data in array
+      let tanamanData = response.data[0]; //because response data in array
       // console.log(this.selected)
-      this.nameOfCow = sapiData.namaSapi;
-      // this.tableItems = sapiData.perangkat.data;
-      this.getBadge(sapiData.perangkat.status);
-      this.getKondisi(sapiData.perangkat.data[sapiData.perangkat.data.length-1].kondisi);
-      this.currentTemp = sapiData.perangkat.data[sapiData.perangkat.data.length-1].suhu.toFixed(2);
-      this.currentHeart = sapiData.perangkat.data[sapiData.perangkat.data.length-1].jantung.toFixed(2);
+      this.nameOfPlant = tanamanData.namaTanaman;
+      // this.tableItems = tanamanData.perangkat.data;
+      this.getBadge(tanamanData.perangkat.status);
+      this.getKondisi(tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kondisi);
+      this.currentSoilMoisture = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kelembaban.toFixed(2);
+      this.currentPh = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].ph.toFixed(2);
       this.soket();
     },
     async processDataInTime(){
       this.isLoading = true
       this.isProcess=false
-      this.socket.removeListener('/topic/cows/detail/'+this.$route.params.id)
-      this.dataChartHeart= []
-      this.dataChartTemp=[]
-      this.dataChartHeartLimit=[]
-      this.dataChartHeartUpperLimit=[]
-      this.dataChartTemperatureLimit=[]
-      this.dataChartTemperatureUpperLimit=[]
+      this.socket.removeListener('/topic/plants/detail/'+this.$route.params.id)
+      this.dataChartPh= []
+      this.dataChartSoilMoisture=[]
+      this.dataChartPhLimit=[]
+      this.dataChartPhUpperLimit=[]
+      this.dataChartSoilMoistureLimit=[]
+      this.dataChartSoilMoistureUpperLimit=[]
       this.labelsData=[]
       this.tableItems = []
       const response = await this.fetchDataInTime();
-      let sapiData = response.data[0]; //because response data in array
+      let tanamanData = response.data[0]; //because response data in array
       // console.log(this.selected)
-      this.tableItems = sapiData.perangkat.data;
+      this.tableItems = tanamanData.perangkat.data;
       this.tableItemsLength = this.tableItems.length;
       console.log(this.tableItemsLength);
-      this.getBadge(sapiData.perangkat.status);
-      this.getKondisi(sapiData.perangkat.data[sapiData.perangkat.data.length-1].kondisi);
-      this.currentTemp = sapiData.perangkat.data[sapiData.perangkat.data.length-1].suhu.toFixed(2);
-      this.currentHeart = sapiData.perangkat.data[sapiData.perangkat.data.length-1].jantung.toFixed(2);
-      for(var i=0;i<sapiData.perangkat.data.length;i++){
-        this.dataChartHeart.push(sapiData.perangkat.data[i].suhu.toFixed(2));
-        this.dataChartTemp.push(sapiData.perangkat.data[i].jantung.toFixed(2));
-        this.dataChartHeartLimit.push(48);
-        this.dataChartHeartUpperLimit.push(80);
-        this.dataChartTemperatureLimit.push(37);
-        this.dataChartTemperatureUpperLimit.push(39);
-        this.dateFormatter(sapiData.perangkat.data[i].tanggal);
+      this.getBadge(tanamanData.perangkat.status);
+      this.getKondisi(tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kondisi);
+      this.currentSoilMoisture = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kelembaban.toFixed(2);
+      this.currentPh = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].ph.toFixed(2);
+      for(var i=0;i<tanamanData.perangkat.data.length;i++){
+        this.dataChartPh.push(tanamanData.perangkat.data[i].kelembaban.toFixed(2));
+        this.dataChartSoilMoisture.push(tanamanData.perangkat.data[i].ph.toFixed(2));
+        this.dataChartPhLimit.push(48);
+        this.dataChartPhUpperLimit.push(80);
+        this.dataChartSoilMoistureLimit.push(37);
+        this.dataChartSoilMoistureUpperLimit.push(39);
+        this.dateFormatter(tanamanData.perangkat.data[i].tanggal);
         this.labelsData.push(this.dateOnFormat);
       }
       this.isProcess=true
@@ -379,7 +379,7 @@ export default {
   #card-chart-01, #card-chart-02 {
     width: 100% !important;
   }
-  .list-sapi-header{
+  .list-tanaman-header{
     color:white;
   }
   .brand-card-header{
