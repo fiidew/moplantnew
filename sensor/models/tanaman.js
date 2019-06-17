@@ -8,8 +8,10 @@ const PerangkatSchema = new Schema({
   status: Number,
   data: [{
     tanggal:{ type: Date, default: Date.now },
-    kelembaban:Number,
+    kelembabanTanah:Number,
     ph:Number,
+    kelembabanUdara :Number,
+    suhuUdara:Number,
     kondisi:Number
   }]
 });
@@ -19,6 +21,14 @@ var TanamanSchema = new Schema({
     type: Schema.Types.ObjectId,
   },
   namaTanaman: {
+    type: String,
+    required: true
+  },
+  luasLahan: {
+    type: Number,
+    required: true
+  },
+  lokasiLahan: {
     type: String,
     required: true
   },

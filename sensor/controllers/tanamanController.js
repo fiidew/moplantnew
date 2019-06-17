@@ -112,8 +112,8 @@ module.exports = {
   data_update: async(req, res)=>{
     let response = new Response()
     try{
-      // response.setData(await tanamanRepositories.streamUpdateData(req.body.kelembaban,req.body.ph,req.body.status,req.params.id))
-      response.setData(await tanamanRepositories.streamUpdateData(req.body.kelembaban,req.body.ph,req.params.id))
+      // response.setData(await tananmanRepositories.streamUpdateData(req.body.kelembaban,req.body.ph,req.body.status,req.params.id))
+      response.setData(await tanamanRepositories.streamUpdateData(req.body.kelembabanTanah, req.body.ph, req.body.kelembabanUdara, req.body.suhuUdara, req.body.status, req.params.id))
     }catch(e){
       response.setStatus(false)
       response.setMessage(e)
@@ -164,7 +164,7 @@ module.exports = {
       let result_decode = jwt.verify(token, config.secret)
       let response = new Response()
         try {
-          response.setData(await tanamanRepositories.createTanaman(result_decode._doc._id,req.body.namaTanaman))
+          response.setData(await tanamanRepositories.createTanaman(result_decode._doc._id,req.body.namaTanaman,req.body.luasLahan,req.body.lokasiLahan ))
         } catch (e) {
           response.setStatus(false)
           response.setMessage(e)

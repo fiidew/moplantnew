@@ -289,23 +289,38 @@ export default{
       //   text: 'NEW'
       // }
     },
-    {
-      title: true,
-      name: 'Intelligent System',
-      class: '',
-      wrapper: {
-        element: '',
-        attributes: {}
-      }
-    },
+      // {
+      //   title: true,
+      //   name: 'Intelligent System',
+      //   class: '',
+      //   wrapper: {
+      //     element: '',
+      //     attributes: {}
+      //   }
+      // },
     // {
     //   name: 'Diagnose',
     //   url: '/expert-system/diagnose',
     //   icon: 'icon-puzzle'
     // },
+    // {
+    //   name: 'History',
+    //   url: '/expert-system/history',
+    //   icon: 'icon-book-open'
+    // },
     {
-      name: 'History',
-      url: '/expert-system/history',
+      name: 'List Plant',
+      url: '/listplant',
+      icon: 'icon-book-open'
+    },
+    {
+      name: 'Forecast Weather',
+      url: '/weatherforecast',
+      icon: 'icon-book-open'
+    },
+    {
+      name: 'Notification',
+      url: '/notification',
       icon: 'icon-book-open'
     },
   ]

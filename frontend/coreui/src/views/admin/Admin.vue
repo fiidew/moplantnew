@@ -7,17 +7,17 @@
           <div class="h1 text-muted text-right mb-4">
             <i class="icon-people"></i>
           </div>
-          <div class="h4 mb-0">{{peternakRegistered}}</div>
+          <div class="h4 mb-0">{{farmerRegistered}}</div>
           <small class="text-muted text-uppercase font-weight-bold">Farmers Registered</small>
-          <b-progress height="{}" class="progress-xs mt-3 mb-0" variant="info" :value="peternakRegistered"/>
+          <b-progress height="{}" class="progress-xs mt-3 mb-0" variant="info" :value="farmerRegistered"/>
         </b-card>
         <b-card>
           <div class="h1 text-muted text-right mb-4">
             <i class="icon-people"></i>
           </div>
-          <div class="h4 mb-0">{{sapiRegistered}}</div>
-          <small class="text-muted text-uppercase font-weight-bold">Cows Registered</small>
-          <b-progress height="{}" class="progress-xs mt-3 mb-0" variant="success" :value="sapiRegistered"/>
+          <div class="h4 mb-0">{{tanamanRegistered}}</div>
+          <small class="text-muted text-uppercase font-weight-bold">Plants Registered</small>
+          <b-progress height="{}" class="progress-xs mt-3 mb-0" variant="success" :value="tanamanRegistered"/>
         </b-card>
         <b-card>
           <div class="h1 text-muted text-right mb-4">
@@ -58,15 +58,15 @@
           >
             <div slot="key-nama" slot-scope="data">
               <img src="img/avatars/breder.jpg" width="50px" alt="farmers logo">
-              <strong> {{data.item.peternak_docs[0].nama}}</strong>
+              <strong> {{data.item.farmer_docs[0].nama}}</strong>
             </div>
             <div slot="key-alamat" slot-scope="data">
               <i class="icon-direction"></i>
-              <strong> {{data.item.peternak_docs[0].alamat}}</strong>
+              <strong> {{data.item.farmer_docs[0].alamat}}</strong>
             </div>
             <div slot="key-telphone" slot-scope="data">
              
-             <h5><b-badge variant="warning">{{data.item.peternak_docs[0].noTelp}}</b-badge></h5>
+             <h5><b-badge variant="warning">{{data.item.farmer_docs[0].telp}}</b-badge></h5>
             
             </div>
           </b-table>
@@ -107,8 +107,8 @@ export default {
   data: function() {
     return {
       isLoading: true,
-      peternakRegistered: 0,
-      sapiRegistered: 0,
+      farmerRegistered: 0,
+      tanamanRegistered: 0,
       deviceOnline: 0,
       deviceOffline: 0,
       devicePending: 0,
@@ -134,14 +134,14 @@ export default {
     this.checkSession();
   },
   methods: {
-    async fetchDataPeternak() {
-      let response = await PostsService.getAllPeternak(
+    async fetchDataFarmer() {
+      let response = await PostsService.getAllFarmer(
         window.localStorage.getItem("token")
       );
       return response.data;
     },
-    async fetchDataSapi() {
-      let response = await PostsService.getAllSapi(
+    async fetchDataTanaman() {
+      let response = await PostsService.getAllTanaman(
         window.localStorage.getItem("token")
       );
       return response.data;
@@ -165,15 +165,15 @@ export default {
       var active = 0,
         nonactive = 0,
         pending = 0;
-      let response = await this.fetchDataPeternak();
-      let responseDataSapi = await this.fetchDataSapi();
-      let peternakData = response.data;
-      let sapiData = responseDataSapi.data;
+      let response = await this.fetchDataFarmer();
+      let responseDataTanaman = await this.fetchDataTanaman();
+      let farmerData = response.data;
+      let tanamanData = responseDataTanaman.data;
       this.isLoading=false
-      this.peternakRegistered = peternakData.length;
-      this.sapiRegistered = sapiData.length;
-      for (var i = 0; i < sapiData.length; i++) {
-        switch (sapiData[i].perangkat.status) {
+      this.farmerRegistered = farmerData.length;
+      this.tanamanRegistered = tanamanData.length;
+      for (var i = 0; i < tanamanData.length; i++) {
+        switch (tanamanData[i].perangkat.status) {
           case Constants.DEVICE_ACTIVE:
             active++;
             break;
@@ -184,7 +184,7 @@ export default {
             pending++;
         }
       }
-      this.tableItems = peternakData;
+      this.tableItems = farmerData;
       this.deviceOnline = active;
       this.deviceOffline = nonactive;
       this.devicePending = pending;

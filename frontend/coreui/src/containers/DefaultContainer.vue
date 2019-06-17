@@ -50,8 +50,8 @@
     <TheFooter>
       <!--footer-->
       <div>
-        <!-- <a href="https://coreui.io">Seecow</a> -->
-        <span class="ml-1">&copy; 2018 Seecow</span>
+        <!-- <a href="https://coreui.io">Moplant</a> -->
+        <span class="ml-1">&copy; 2018 Moplant</span>
       </div>
       
     </TheFooter>

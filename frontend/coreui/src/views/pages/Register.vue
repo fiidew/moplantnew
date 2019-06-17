@@ -20,7 +20,7 @@
               </ul>
               <hr>
               <p class="mb-0">
-               <b-button variant="warning" block @click="toLogin">Login</b-button>
+               <b-button variant="success" block @click="toLogin">Login</b-button>
               </p>
             </b-alert>
 
@@ -72,7 +72,7 @@
                   <b-form-input type="number" class="form-control" placeholder="Phone" autocomplete="Phone" v-model="telp" />
                 </b-input-group>
 
-                <b-button variant="warning" block @click="checkForm">Create</b-button>
+                <b-button variant="success" block @click="checkForm">Create</b-button>
               </b-form>
             </b-card-body>
             

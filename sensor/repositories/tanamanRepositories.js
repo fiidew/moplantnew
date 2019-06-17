@@ -18,6 +18,16 @@ var Constants = require('../services/Constants');
 //   credential: admin.credential.cert(serviceAccount),
 //   databaseURL: "https://seecowapp.firebaseio.com"
 // });
+
+var admin = require("firebase-admin");
+
+var serviceAccount = require("../moplant-94217-firebase-adminsdk-mwnub-af35bd47b1.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://moplant-94217.firebaseio.com"
+});
+
 const tanamanRepositories = {
   getTanamanOnSpecificTime: async(id,start,end)=>{
     let result = await Tanaman.aggregate(
@@ -70,8 +80,7 @@ const tanamanRepositories = {
                 perangkat:{
                   status : "$_id.status",
                   data: "$listResult",
-                  idOnRaspi: "$_id.idOnRaspi"
-                  
+                  idOnRaspi: "$_id.idOnRaspi"                  
                 }
                 
             }
@@ -97,15 +106,17 @@ const tanamanRepositories = {
   },
   
   // streamUpdateData : async(kelembaban, ph, status,id) => {
-    streamUpdateData : async(kelembaban, ph,id) => {
+    streamUpdateData : async(kelembabanTanah, ph, kelembabanUdara, suhuUdara, status, id) => {
     var today = new Date();
     /**
      * condition dairy cows healty status
      */
-    var tmpKelembaban = Number(kelembaban)
+    var tmpKelembabanTanah = Number(kelembabanTanah)
     var tmpPh = Number(ph)
+    var tmpKelembabanUdara = Number(kelembabanUdara)
+    var tmpSuhuUdara = Number(suhuUdara)
     var tmpKondisi = Constants.NORMAL_CONDITION
-    if (tmpPh < Constants.HEARTRATE_LOWER_LIMIT || tmpPh > Constants.HEARTRATE_UPPER_LIMIT || tmpKelembaban < Constants.TEMPERATURE_LOWER_LIMIT || tmpKelembaban > Constants.TEMPERATURE_UPPER_LIMIT) {
+    if (tmpKelembabanTanah < Constants.SOIL_MOISTURE_LOWER_LIMIT || tmpKelembabanTanah > Constants.SOIL_MOISTURE_UPPER_LIMIT || tmpSuhuUdara < Constants.TEMPERATURE_LOWER_LIMIT || tmpSuhuUdara > Constants.TEMPERATURE_UPPER_LIMIT) {
       /**
        * Abnormal
        */
@@ -120,7 +131,7 @@ const tanamanRepositories = {
       var payload = {
         notification: {
           title: tanamanInform.namaTanaman + " is abnormal !!",
-          body: "Please open yours Plant App and let's check your cows.."
+          body: "Please open yours Plant App and let's check your plant.."
         }
       };
       
@@ -141,14 +152,16 @@ const tanamanRepositories = {
       _id:id
     },
     {
-      // $set: {
-      //   "perangkat.status": status
-      // },
+      $set: {
+        "perangkat.status": status
+      },
       $push: {
         "perangkat.data": {
           tanggal: today,
-          kelembaban: kelembaban,
+          kelembabanTanah: kelembabanTanah,
           ph: ph,
+          kelembabanUdara: kelembabanUdara,
+          suhuUdara: suhuUdara,
           kondisi: tmpKondisi
           }
         }
@@ -193,7 +206,7 @@ const tanamanRepositories = {
     return result
   },
 
-  createTanaman: async(id, namaTanaman)=>{
+  createTanaman: async(id, namaTanaman, luasLahan, lokasiLahan)=>{
     let checkFarmer = await farmerRepositories.getFarmerByIdUser(id)
     if(checkFarmer){
       /**
@@ -207,14 +220,18 @@ const tanamanRepositories = {
          * 0 -> tidak normal
          */
         var today = new Date();
-        var initial_kelembaban = 10;
+        var initial_kelembaban_tanah = 10;
         var initial_ph = 10;
+        var initial_kelembaban_udara = 10;
+        var initial_suhu_udara = 10;
         var initial_status = Constants.DEVICE_PENDING;
         var initial_kondisi = Constants.NORMAL_CONDITION;
         let sub_data = {
           tanggal: today,
-          kelembaban: initial_kelembaban,
+          kelembabanTanah: initial_kelembaban_tanah,
           ph: initial_ph,
+          kelembabanUdara:initial_kelembaban_udara,
+          suhuUdara:initial_suhu_udara,
           kondisi: initial_kondisi
         }
 
@@ -225,6 +242,8 @@ const tanamanRepositories = {
         var newTanaman = new Tanaman({
           idFarmer: checkFarmer._id,
           namaTanaman: namaTanaman,
+          luasLahan:luasLahan,
+          lokasiLahan:lokasiLahan,
           perangkat: sub_perangkat
         });
         let saveTanaman = await newTanaman.save()

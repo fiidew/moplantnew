@@ -7,26 +7,26 @@
         <div class="h1 text-muted text-right mb-4">
           <i class="icon-people"></i>
         </div>
-        <div class="h4 mb-0">{{peternakRegistered}}</div>
+        <div class="h4 mb-0">{{farmerRegistered}}</div>
         <small class="text-muted text-uppercase font-weight-bold">Farmers Registered</small>
         <b-progress
           height="{}"
           class="progress-xs mt-3 mb-0"
           variant="info"
-          :value="peternakRegistered"
+          :value="farmerRegistered"
         />
       </b-card>
       <b-card>
         <div class="h1 text-muted text-right mb-4">
           <i class="icon-people"></i>
         </div>
-        <div class="h4 mb-0">{{sapiRegistered}}</div>
-        <small class="text-muted text-uppercase font-weight-bold">Cows Registered</small>
+        <div class="h4 mb-0">{{tanamanRegistered}}</div>
+        <small class="text-muted text-uppercase font-weight-bold">Plants Registered</small>
         <b-progress
           height="{}"
           class="progress-xs mt-3 mb-0"
           variant="success"
-          :value="sapiRegistered"
+          :value="tanamanRegistered"
         />
       </b-card>
       <b-card>
@@ -66,7 +66,7 @@
     </b-card-group>
     <b-row>
       <b-col md="12">
-        <b-card header="Requested Cows" class="card-accent-warning">
+        <b-card header="Requested Plants" class="card-accent-warning">
           <b-table
             class="mb-0 table-outline"
             striped
@@ -78,16 +78,16 @@
           >
             <div slot="key-nama" slot-scope="data">
               <img src="img/avatars/breder.jpg" width="50px" alt="farmers logo">
-              <strong>{{data.item.peternak_docs[0].nama}}</strong>
+              <strong>{{data.item.farmer_docs[0].nama}}</strong>
             </div>
-            <div slot="key-nama-sapi" slot-scope="data">
-              <strong>{{data.item.namaSapi}}</strong>
+            <div slot="key-nama-tanaman" slot-scope="data">
+              <strong>{{data.item.namaTanaman}}</strong>
             </div>
             <div slot="key-id-raspi" slot-scope="data">
               <b-link class="card-header-action btn-minimize" v-b-toggle.collapse1>
                 <h4><b-badge variant="primary" v-bind:id="data.item._id" >Open ID <i class="icon-eye"></i></b-badge></h4>
               </b-link>
-              <b-popover v-bind:target="data.item._id" title="Cow ID on Gateway">
+              <b-popover v-bind:target="data.item._id" title="Plant ID on Gateway">
                 <!-- <strong>{{data.item._id}}</strong> -->
                 <h5>
                   <b-badge variant="secondary">{{data.item.perangkat.idOnRaspi}}</b-badge>
@@ -99,11 +99,11 @@
             </div>
             <div slot="key-alamat" slot-scope="data">
               <i class="icon-direction"></i>
-              <strong> {{data.item.peternak_docs[0].alamat}}</strong>
+              <strong> {{data.item.farmer_docs[0].alamat}}</strong>
             </div>
             <div slot="key-telphone" slot-scope="data">
               <h5>
-                <b-badge variant="warning">{{data.item.peternak_docs[0].noTelp}}</b-badge>
+                <b-badge variant="warning">{{data.item.farmer_docs[0].telp}}</b-badge>
               </h5>
             </div>
           </b-table>
@@ -130,7 +130,7 @@ import { BounceSpinner } from 'vue-spinners/dist/vue-spinners.common';
 
 
 export default {
-  name: "RequestedCows",
+  name: "RequestedPlants",
   components: {
     Callout,
     BounceSpinner,
@@ -145,8 +145,8 @@ export default {
   data: function() {
     return {
       isLoading: true,
-      peternakRegistered: 0,
-      sapiRegistered: 0,
+      farmerRegistered: 0,
+      tanamanRegistered: 0,
       deviceOnline: 0,
       deviceOffline: 0,
       devicePending: 0,
@@ -159,8 +159,8 @@ export default {
           label: "Farmers"
         },
         {
-          key: "key-nama-sapi",
-          label: "Cow ID"
+          key: "key-nama-tanaman",
+          label: "Plant ID"
         },
         {
           key: "key-id-raspi",
@@ -185,20 +185,20 @@ export default {
     this.checkSession();
   },
   methods: {
-    async fetchDataPeternak() {
-      let response = await PostsService.getAllPeternak(
+    async fetchDataFarmer() {
+      let response = await PostsService.getAllFarmer(
         window.localStorage.getItem("token")
       );
       return response.data;
     },
-    async fetchDataSapi() {
-      let response = await PostsService.getAllSapi(
+    async fetchDataTanaman() {
+      let response = await PostsService.getAllTanaman(
         window.localStorage.getItem("token")
       );
       return response.data;
     },
-    async fetchDataRequestedSapi() {
-      let response = await PostsService.getRequestedSapi(
+    async fetchDataRequestedTanaman() {
+      let response = await PostsService.getRequestedTanaman(
         window.localStorage.getItem("token")
       );
       return response.data;
@@ -222,17 +222,17 @@ export default {
       var active = 0,
         nonactive = 0,
         pending = 0;
-      let response = await this.fetchDataPeternak();
-      let responseDataSapi = await this.fetchDataSapi();
-      let responseDataRequestedSapi = await this.fetchDataRequestedSapi();
-      let peternakData = response.data;
-      let sapiData = responseDataSapi.data;
-      let requestedSapiData = responseDataRequestedSapi.data;
+      let response = await this.fetchDataFarmer();
+      let responseDataTanaman = await this.fetchDataTanaman();
+      let responseDataRequestedTanaman = await this.fetchDataRequestedTanaman();
+      let farmerData = response.data;
+      let tanamanData = responseDataTanaman.data;
+      let requestedTanamanData = responseDataRequestedTanaman.data;
       this.isLoading=false
-      this.peternakRegistered = peternakData.length;
-      this.sapiRegistered = sapiData.length;
-      for (var i = 0; i < sapiData.length; i++) {
-        switch (sapiData[i].perangkat.status) {
+      this.farmerRegistered = farmerData.length;
+      this.tanamanRegistered = tanamanData.length;
+      for (var i = 0; i < tanamanData.length; i++) {
+        switch (tanamanData[i].perangkat.status) {
           case Constants.DEVICE_ACTIVE:
             active++;
             break;
@@ -243,7 +243,7 @@ export default {
             pending++;
         }
       }
-      this.tableItems = requestedSapiData;
+      this.tableItems = requestedTanamanData;
       this.deviceOnline = active;
       this.deviceOffline = nonactive;
       this.devicePending = pending;

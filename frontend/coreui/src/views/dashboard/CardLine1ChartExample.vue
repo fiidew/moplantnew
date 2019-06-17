@@ -7,7 +7,7 @@ export default {
   extends: Line,
   props: ['height', 'width'],
   mounted () {
-    const brandPrimary = getStyle('--primary') || '#20a8d8'
+    const brandPrimary = getStyle('--success') || '#32CD32'
     const datasets1 = [
       {
         label: 'My First dataset',

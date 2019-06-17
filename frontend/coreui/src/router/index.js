@@ -18,6 +18,11 @@ const Colors = () => import('@/views/theme/Colors')
 const Typography = () => import('@/views/theme/Typography')
 const Diagnose = () => import('@/views/expert/Diagnose')
 const History = () => import('@/views/expert/History')
+const ListPlant = () => import('@/views/ListPlant')
+const WeatherForecast = () => import('@/views/WeatherForecast')
+const Notification = () => import('@/views/Notifications')
+const HistoryMonitoring = () => import('@/views/HistoryMonitoring')
+
 
 const Charts = () => import('@/views/Charts')
 const Widgets = () => import('@/views/Widgets')
@@ -92,6 +97,11 @@ export default new Router({
           component: Details
         },
         {
+          path: '/:id/historymonitoring',
+          name : 'HistoryMonitoring',
+          component: HistoryMonitoring
+        },
+        {
           path: '/:id/identifications',
           name : 'expert',
           component: Diagnose
@@ -125,6 +135,21 @@ export default new Router({
           path: '/expert-system/history',
           name : 'History',
           component: History
+        },
+        {
+          path: '/ListPlant',
+          name : 'ListPlant',
+          component: ListPlant
+        },
+        {
+          path: '/WeatherForecast',
+          name : 'WeatherForecast',
+          component: WeatherForecast
+        },
+        {
+          path: '/Notification',
+          name : 'Notification',
+          component: Notification
         },
         {
           path: 'expert-system',

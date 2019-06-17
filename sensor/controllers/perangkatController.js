@@ -17,8 +17,10 @@ exports.data_update = function (req, res) {
       $push: {
         'data': {
           tanggal: today,
-          kelembaban: req.body.kelembaban,
-          ph: req.body.ph
+          kelembabanTanah: req.body.kelembabanTanah,
+          ph: req.body.ph,
+          kelembabanUdara: req.body.kelembabanUdara,
+          suhuUdara:req.body.suhuUdara
         }
       }
     },

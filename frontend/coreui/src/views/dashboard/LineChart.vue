@@ -5,25 +5,34 @@ import { getStyle, hexToRgba } from '@coreui/coreui/dist/js/coreui-utilities'
 
 export default {
   extends: Line,
-  props: ["dataheart","datatemperature","dataheartlimit","datatemperaturelimit","heartupperlimit","temperatureupperlimit","options","labels"],
+  props: ["datasoilmoisture","datahumidity","datatemperature","datasoilmoisturelimit","datahumiditylimit","datatemperaturelimit","soilmoistureupperlimit","humidityupperlimit","temperatureupperlimit","options","labels"],
   mounted() {
     this.renderLineChart();
   },
   computed: {
-    chartDataHeart: function() {
-      return this.dataheart;
+    chartDataSoilMoisture: function() {
+      return this.datasoilmoisture;
+    },
+    chartDataHumidity: function(){
+      return this.datahumidity;
     },
     chartDataTemperature: function(){
       return this.datatemperature;
     },
-    chartDataHeartLimit: function(){
-      return this.dataheartlimit;
+    chartDataSoilMoistureLimit: function(){
+      return this.datasoilmoisturelimit;
+    },
+    chartDataHumidtyLimit: function(){
+      return this.datahumiditylimit;
     },
     chartDataTemperatureLimit: function(){
       return this.datatemperaturelimit;
     },
-    chartDataHeartUpperLimit: function(){
-      return this.heartupperlimit;
+    chartDataSoilMoistureUpperLimit: function(){
+      return this.soilmoistureupperlimit;
+    },
+    chartDataHumidityUpperLimit: function(){
+      return this.humidityupperlimit;
     },
     chartDataTemperatureUpperLimit: function(){
       return this.temperatureupperlimit;
@@ -36,45 +45,75 @@ export default {
     renderLineChart: function() {
     const brandSuccess = getStyle('--success') || '#4dbd74'
     const brandInfo = getStyle('--info') || '#20a8d8'
-    const brandDanger = getStyle('--danger') || '#f86c6b'
+    const brandDanger = getStyle('--danger') || '#654321'
     const brandWarning = getStyle('--warning') || '#ffc107'
     this.renderChart(
       {
         labels: this.labelsData,
         datasets: [
           {
-            label: "Heart Rate",
+            label: "Soil Moisture",
             backgroundColor: 'transparent',
-            borderColor: brandDanger,
+            borderColor: '#654321',
             pointHoverBackgroundColor: '#fff',
             borderWidth: 4,
-            data: this.chartDataHeart
+            data: this.chartDataSoilMoisture
+            //data: [200, 210, 300, 450, 210, 450, 200, 210, 300, 450, 210, 110]
           },
           {
-            label: 'Temperature',
+            label: 'Humidity',
             backgroundColor: 'transparent',
             borderColor: brandInfo,
             pointHoverBackgroundColor: '#fff',
             borderWidth: 4,
-            data: this.chartDataTemperature
+            data: this.chartDataHumidity
+            //data: [150, 430, 210, 300, 410, 200, 400, 200, 140, 210]
           },
+                    {
+            label: 'Temperature',
+            backgroundColor: 'transparent',
+            borderColor: brandSuccess,
+            pointHoverBackgroundColor: '#fff',
+            borderWidth: 4,
+            data: this.chartDataTemperature
+            //data: [100, 400, 200, 100, 210, 100, 400, 200, 100, 210]
+          },
+          /*
           {
-            label: 'Normal Heart Rate Lower Limit',
+            label: 'Normal Soil Mositure Lower Limit',
             backgroundColor: hexToRgba(brandDanger, 10),
             borderColor: brandDanger,
             pointHoverBackgroundColor: '#fff',
             borderWidth: 1,
             borderDash: [8, 5],
-            data: this.chartDataHeartLimit
+            data: this.chartDataSoilMoistureLimit
           },
           {
-            label: 'Normal Heart Rate Upper Limit',
+            label: 'Normal Soil Mositure Upper Limit',
             backgroundColor:'transparent',
             borderColor: brandDanger,
             pointHoverBackgroundColor: '#fff',
             borderWidth: 1,
             borderDash: [8, 5],
-            data: this.chartDataHeartUpperLimit
+            data: this.chartDataSoilMoistureUpperLimit
+          },
+          {
+            label: 'Normal Humidity Lower Limit',
+            backgroundColor: hexToRgba(brandDanger, 10),
+            borderColor: brandDanger,
+            pointHoverBackgroundColor: '#fff',
+            borderWidth: 1,
+            borderDash: [8, 5],
+            data: this.chartDataHumidtyLimit
+          },
+          {
+            label: 'Normal Humidity Upper Limit',
+            backgroundColor:'transparent',
+            borderColor: brandDanger,
+            pointHoverBackgroundColor: '#fff',
+            borderWidth: 1,
+            borderDash: [8, 5],
+            data: this.chartDataHumidityUpperLimit
           },
           {
             label: 'Normal Temperature Lower Limit',
@@ -94,6 +133,7 @@ export default {
             borderDash: [8, 5],
             data: this.chartDataTemperatureUpperLimit
           }
+        */
         ]
       },
       { 
@@ -124,9 +164,9 @@ export default {
     }
   },
   watch: {
-    dataheart: function() {
+    datasoilmoisture: function() {
       // this._chart.destroy();
-      console.log(this.dataheart);
+      console.log(this.datasoilmoisture);
       console.log(this.options);
       //this.renderChart(this.data, this.options);
       this.renderLineChart();

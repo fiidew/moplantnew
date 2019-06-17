@@ -2,16 +2,17 @@
   <div class="animated fadeIn">
     <b-row>
       <b-col md="12">
-        <b-card header="Monitoring" class="card-accent-warning">
+        <b-card header="Monitoring" class="card-accent-success">
     <b-card>
       <b-row>
         <b-col sm="5">
-          <h4><img src="img/cow/cow (2).png" width="50px" alt="CoreUI Logo"> {{nameOfPlant}}</h4>
+          <h4><img src="img/plant/plant.png" width="50px" alt="CoreUI Logo"> {{nameOfPlant}}</h4>
           <!-- <h4 id="traffic" class="card-title mb-0">Graph</h4> -->
           <!-- <div class="small text-muted">{{dateOnFormat}}</div> -->
           <b-badge v-bind:variant="conditions">{{CurrentConditions}}</b-badge> | 
            <b-badge v-bind:variant="statusDevice">{{statusDeviceInStr}}</b-badge> 
         </b-col>
+        <!--
         <b-col sm="7">
           <b-form inline class="float-right">
             <label class="mr-sm-2" for="inlineInput1">Start: </label>
@@ -20,61 +21,41 @@
             <b-input id="inlineInput2" type="date" v-model="endDate"></b-input>
             <b-button v-b-tooltip.hover title="Filter data" type="button" variant="primary" class="float-right" @click="filterData"><i class="icon-magnifier"></i></b-button> 
               <b-button v-b-tooltip.hover title="Streaming data" type="button" variant="warning" class="float-right" @click="firstLoad"><i class="icon-clock"></i></b-button>
+            <div slot="key-action" slot-scope="data">
+              <b-button variant="primary" size="sm" @click="toDetail(data.item._id)">Show Details</b-button>
+            </div>
           </b-form> 
         </b-col>
+        -->
       </b-row>
       <bounce-spinner v-if="isLoading"></bounce-spinner>
-      <line-chart v-if="isProcess" :labels="labelsData" :dataph="dataChartPh" :datakelembaban="dataChartSoilMoisture" :dataphlimit="dataChartPhLimit" :datasoilmoisturelimit="dataChartSoilMoistureLimit" :soilmoistureupperlimit="dataChartSoilMoistureUpperLimit" :phupperlimit="dataChartPhUpperLimit" :options="{responsive: true, maintainAspectRatio: false}"></line-chart>
+      <line-chart v-if="isProcess" :labels="labelsData" :datasoilmoisture="dataChartSoilMoisture" :datahumidity="dataChartHumidity" :datatemperature="dataChartTemperature" :datasoilmoisturelimit="dataChartSoilMoistureLimit" :datahumiditylimit="dataChartHumidityLimit" :datatemperaturelimit="dataChartTemperatureLimit" :soilmoistureupperlimit="dataChartSoilMoistureUpperLimit" :humidityupperlimit="dataChartHumidityUpperLimit" :temperatureupperlimit="dataChartTemperatureUpperLimit" :options="{responsive: true, maintainAspectRatio: false}"></line-chart>
       <div slot="footer">
         <b-row class="text-center">
           <b-col class="mb-sm-6 mb-0">
             <div class="text-muted">Soil Moisture</div>
             <strong>{{currentSoilMoisture}}</strong>
-             <b-progress height={} class="progress-xs mt-2" :precision="1" v-bind:value="100"></b-progress>
+              <b-progress height={} class="progress-xs mt-2" :precision="1" variant="secondary" v-bind:value="100"></b-progress>
           </b-col>
-         
+
           <b-col class="mb-sm-6 mb-0">
-            <div class="text-muted">Ph</div>
-            <strong>{{currentPh}}</strong>
-              <b-progress height={} class="progress-xs mt-2" :precision="1" variant="danger" v-bind:value="100"></b-progress>
+            <div class="text-muted">Humidity</div>
+            <strong>{{currentHumidity}}</strong>
+             <b-progress height={} class="progress-xs mt-2" :precision="1" variant="secondary" v-bind:value="100"></b-progress>
           </b-col>
           
+          <b-col class="mb-sm-6 mb-0">
+            <div class="text-muted">Temperature</div>
+            <strong>{{currentTemperature}}</strong>
+             <b-progress height={} class="progress-xs mt-2" :precision="1" variant="secondary" v-bind:value="100"></b-progress>
+          </b-col>
         </b-row>
       </div>
     </b-card>
-    <b-card>
-            <!-- <b-row>  -->
-              
-            <!-- <b-table striped outlined stacked="sm" hover :items="tableItems" :fields="tableFields" head-variant="light" :current-page="currentPage" :per-page="perPage"> -->
-           <b-table :hover="hover" :striped="striped" :bordered="bordered" :small="small" :fixed="fixed" responsive="sm" :items="tableItems" :fields="tableFields" :current-page="currentPage" :per-page="perPage">
-           
-            <div slot="key-kondisi" slot-scope="data">
-              <b-badge :variant="getKondisi(data.item.kondisi)">{{data.item.kondisi == 0 ? "Abnormal":"Normal"}}</b-badge>
-            </div>
-            
-            <div slot="key-kelembaban" slot-scope="data">
-              
-              <strong>{{data.item.kelembaban.toFixed(2)}}</strong>
-              <div class="small text-muted">Celcius</div>
-            </div>
-            <div slot="key-ph" slot-scope="data">
-              
-              <strong>{{data.item.ph.toFixed(2)}}</strong>
-              <div class="small text-muted">BPM</div>
-            </div>
-             <div slot="key-tanggal" slot-scope="data">
-              <b-badge :variant="dateFormatter(data.item.tanggal)">{{data.item.tanggal | formatDate}}</b-badge>
-              
-            </div>
-            </b-table>
-            <nav>
-                <b-pagination :total-rows="getRowCount(tableItems)" :per-page="perPage" v-model="currentPage" prev-text="Prev" next-text="Next" hide-goto-end-buttons/>
-            </nav>
-            <!-- <nav>
-              <b-pagination size="sm" :total-rows="tableItemsLength" :per-page="10" :limit="5" prev-text="prev" next-text="next" v-model="page"/>
-            </nav> -->
-            <!-- </b-row> -->
-             </b-card>
+  
+    <!-- ini tempat tabel -->
+     
+  
         </b-card>
       </b-col>
     </b-row>
@@ -153,23 +134,27 @@ export default {
       totalRows: 0,
       page:1,
       tableItemsLength:0,
-      dataChartPh: [],
       dataChartSoilMoisture: [],
-      dataChartPhLimit:[],
-      dataChartPhUpperLimit:[],
+      dataChartHumidity: [],
+      dataChartTemperature: [],
       dataChartSoilMoistureLimit:[],
       dataChartSoilMoistureUpperLimit:[],
+      dataChartHumidityLimit:[],
+      dataChartHumidityUpperLimit:[],
+      dataChartTemperatureLimit:[],
+      dataChartTemperatureUpperLimit:[],
       labelsData:[],
       statusDeviceInStr:"",
       statusDevice:"",
       conditions:"",
       test: [4, 4, 4, 4, 4, 4],
       nameOfPlant:"",
-      socket : io('206.189.36.70:3001'),
+      socket : io('localhost:3000'),
       CurrentConditions:"",
       dateOnFormat:"",
+      currentTemperature:0,
+      currentHumidity:0,
       currentSoilMoisture:0,
-      currentPh:0,
       tableItems: [],
       tableFields: [
         
@@ -177,11 +162,14 @@ export default {
           key:'key-kondisi',
           label:'Condition'
         },
-        { key: 'key-kelembaban', 
+        { key: 'key-kelembabanTanah', 
           label: 'SoilMoisture' 
         },
-        { key: 'key-ph', 
-          label: 'Ph' 
+        { key: 'key-kelembabanUdara', 
+          label: 'KelembabanUdara' 
+        },
+        { key: 'key-suhuUdara', 
+          label: 'Temperature' 
         },
         { key: 'key-tanggal', 
           label: 'Time' 
@@ -237,36 +225,46 @@ export default {
     },
     soket(){
       this.socket.on('/topic/plants/detail/'+this.$route.params.id, (tanamanData) => {
-        // this.tableItems = tanamanData.perangkat.data;
-        this.currentSoilMoisture = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kelembaban.toFixed(2);
-        this.currentPh = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].ph.toFixed(2);
+        //this.tableItems = tanamanData.perangkat.data;
+        this.currentTemperature= tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].suhuUdara.toFixed(2);
+        this.currentSoilMoisture = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kelembabanTanah.toFixed(2);
+        this.currentHumidity=tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kelembabanUdara.toFixed(2);
         this.getBadge(tanamanData.perangkat.status);
         this.getKondisi(tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kondisi);
         this.dateFormatter(tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].tanggal);
         // Chart operation
-        if(this.dataChartPh.length > 120){
-          this.dataChartPh.shift();
+        if(this.dataChartSoilMoisture.length > 120){
           this.dataChartSoilMoisture.shift();
-          this.dataChartPhLimit.shift();
-          this.dataChartPhUpperLimit.shift();
+          this.dataChartHumidity.shift();
+          this.dataChartTemperature.shift();
           this.dataChartSoilMoistureLimit.shift();
           this.dataChartSoilMoistureUpperLimit.shift();
+          this.dataChartHumidityLimit.shift();
+          this.dataChartHumidityUpperLimit.shift();
+          this.dataChartTemperatureLimit.shift();
+          this.dataChartTemperatureUpperLimit.shift();
           this.labelsData.shift();
 
-          this.dataChartPh.push(this.currentPh);
           this.dataChartSoilMoisture.push(this.currentSoilMoisture);
-          this.dataChartPhLimit.push(48);
-          this.dataChartPhUpperLimit.push(80);
-          this.dataChartSoilMoistureLimit.push(37);
-          this.dataChartSoilMoistureUpperLimit.push(39);
+          this.dataChartHumidity.push(this.currentHumidity);
+          this.dataChartTemperature.push(this.currentTemperature);
+          this.dataChartSoilMoistureLimit.push(48);
+          this.dataChartSoilMoistureUpperLimit.push(80);
+          this.dataChartHumidityLimit.push(48);
+          this.dataChartHumidityUpperLimit.push(80);
+          this.dataChartTemperatureLimit.push(37);
+          this.dataChartTemperatureUpperLimit.push(39);
           this.labelsData.push(this.dateOnFormat);
         }else{
-          this.dataChartPh.push(this.currentPh);
           this.dataChartSoilMoisture.push(this.currentSoilMoisture);
-          this.dataChartPhLimit.push(48);
-          this.dataChartPhUpperLimit.push(80);
-          this.dataChartSoilMoistureLimit.push(37);
-          this.dataChartSoilMoistureUpperLimit.push(39);
+          this.dataChartHumidity.push(this.currentHumidity);
+          this.dataChartTemperature.push(this.currentTemperature);
+          this.dataChartSoilMoistureLimit.push(48);
+          this.dataChartSoilMoistureUpperLimit.push(80);
+          this.dataChartHumidityLimit.push(48);
+          this.dataChartHumidityUpperLimit.push(80);
+          this.dataChartTemperatureLimit.push(37);
+          this.dataChartTemperatureUpperLimit.push(39);
           this.labelsData.push(this.dateOnFormat);
         }
         
@@ -276,12 +274,15 @@ export default {
     },
     
     async firstLoad(){
-      this.dataChartPh= []
-      this.dataChartSoilMoisture=[]
-      this.dataChartPhLimit=[]
-      this.dataChartPhUpperLimit=[]
+      this.dataChartSoilMoisture= []
+      this.dataChartHumidity= []
+      this.dataChartTemperature=[]
       this.dataChartSoilMoistureLimit=[]
       this.dataChartSoilMoistureUpperLimit=[]
+      this.dataChartHumidityLimit=[]
+      this.dataChartHumidityUpperLimit=[]
+      this.dataChartTemperatureLimit=[]
+      this.dataChartTemperatureUpperLimit=[]
       this.labelsData=[]
       this.tableItems=[]
       const response = await this.fetchDataToday();
@@ -291,20 +292,24 @@ export default {
       // this.tableItems = tanamanData.perangkat.data;
       this.getBadge(tanamanData.perangkat.status);
       this.getKondisi(tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kondisi);
-      this.currentSoilMoisture = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kelembaban.toFixed(2);
-      this.currentPh = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].ph.toFixed(2);
+      this.currentTemperature = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].suhuUdara.toFixed(2);
+      this.currentHumidity = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kelembabanUdara.toFixed(2);
+      this.currentSoilMoisture = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kelembabanTanah.toFixed(2);
       this.soket();
     },
     async processDataInTime(){
       this.isLoading = true
       this.isProcess=false
       this.socket.removeListener('/topic/plants/detail/'+this.$route.params.id)
-      this.dataChartPh= []
-      this.dataChartSoilMoisture=[]
-      this.dataChartPhLimit=[]
-      this.dataChartPhUpperLimit=[]
+      this.dataChartSoilMoisture= []
+      this.dataChartHumidity= []
+      this.dataChartTemperature=[]
       this.dataChartSoilMoistureLimit=[]
       this.dataChartSoilMoistureUpperLimit=[]
+      this.dataChartHumidityLimit=[]
+      this.dataChartHumidityUpperLimit=[]
+      this.dataChartTemperatureLimit=[]
+      this.dataChartTemperatureUpperLimit=[]
       this.labelsData=[]
       this.tableItems = []
       const response = await this.fetchDataInTime();
@@ -315,15 +320,19 @@ export default {
       console.log(this.tableItemsLength);
       this.getBadge(tanamanData.perangkat.status);
       this.getKondisi(tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kondisi);
-      this.currentSoilMoisture = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kelembaban.toFixed(2);
-      this.currentPh = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].ph.toFixed(2);
+      this.currentTemperature = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].suhuUdara.toFixed(2);
+      this.currentHumidity = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kelembabanUdara.toFixed(2);
+      this.currentSoilMoisture = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kelembabanTanah.toFixed(2);
       for(var i=0;i<tanamanData.perangkat.data.length;i++){
-        this.dataChartPh.push(tanamanData.perangkat.data[i].kelembaban.toFixed(2));
-        this.dataChartSoilMoisture.push(tanamanData.perangkat.data[i].ph.toFixed(2));
-        this.dataChartPhLimit.push(48);
-        this.dataChartPhUpperLimit.push(80);
-        this.dataChartSoilMoistureLimit.push(37);
-        this.dataChartSoilMoistureUpperLimit.push(39);
+        this.dataChartSoilMoisture.push(tanamanData.perangkat.data[i].kelembabanTanah.toFixed(2));
+        this.dataChartHumidity.push(tanamanData.perangkat.data[i].kelembabanUdara.toFixed(2));
+        this.dataChartTemperature.push(tanamanData.perangkat.data[i].suhuUdara.toFixed(2));
+        this.dataChartSoilMoistureLimit.push(48);
+        this.dataChartSoilMoistureUpperLimit.push(80);
+        this.dataChartHumidityLimit.push(48);
+        this.dataChartHumidityUpperLimit.push(80);
+        this.dataChartTemperatureLimit.push(37);
+        this.dataChartTemperatureUpperLimit.push(39);
         this.dateFormatter(tanamanData.perangkat.data[i].tanggal);
         this.labelsData.push(this.dateOnFormat);
       }
@@ -344,12 +353,12 @@ export default {
       
       var kondisiPointer = 0;
       if(Number(tmp) == 0 ){
-        this.CurrentConditions="Abnormal";
+        this.CurrentConditions="Need water";
         this.conditions="danger"
       }else{
         kondisiPointer = 1;
         this.CurrentConditions="Normal";
-        this.conditions="success"
+        this.conditions="primary"
       }
       return kondisiPointer == 0 ? 'danger' : 'success'
     },
@@ -367,7 +376,7 @@ export default {
       return 'secondary';
     },
     toDetail (id){
-       this.$router.push({ name: 'Details', params: {id : id} })
+       this.$router.push({ name: 'HistoryMonitoring', params: {id : id} })
       console.log(id);
     }
   } 
@@ -389,3 +398,43 @@ export default {
     text-align: center;
   }
 </style>
+
+
+<!--
+<b-card>
+            <!-- <b-row>  -->
+              
+            <!-- <b-table striped outlined stacked="sm" hover :items="tableItems" :fields="tableFields" head-variant="light" :current-page="currentPage" :per-page="perPage"> -->
+           <b-table :hover="hover" :striped="striped" :bordered="bordered" :small="small" :fixed="fixed" responsive="sm" :items="tableItems" :fields="tableFields" :current-page="currentPage" :per-page="perPage">
+           
+            <div slot="key-kondisi" slot-scope="data">
+              <b-badge :variant="getKondisi(data.item.kondisi)">{{data.item.kondisi == 0 ? "Abnormal":"Normal"}}</b-badge>
+            </div>
+            
+            
+            <div slot="key-kelembabanTanah" slot-scope="data">
+              <strong>{{data.item.kelembabanTanah.toFixed(2)}}</strong>
+              <div class="small text-muted">%RH</div>
+            </div>
+            <div slot="key-kelembabanUdara" slot-scope="data">
+              <strong>{{data.item.kelembabanUdara.toFixed(2)}}</strong>
+              <div class="small text-muted">%</div>
+            </div>
+            <div slot="key-suhuUdara" slot-scope="data">
+              <strong>{{data.item.suhuUdara.toFixed(2)}}</strong>
+              <div class="small text-muted">Celcius</div>
+            </div>
+             <div slot="key-tanggal" slot-scope="data">
+              <b-badge :variant="dateFormatter(data.item.tanggal)">{{data.item.tanggal | formatDate}}</b-badge>
+              
+            </div>
+            </b-table>
+            <nav>
+                <b-pagination :total-rows="getRowCount(tableItems)" :per-page="perPage" v-model="currentPage" prev-text="Prev" next-text="Next" hide-goto-end-buttons/>
+            </nav>
+            <!-- <nav>
+              <b-pagination size="sm" :total-rows="tableItemsLength" :per-page="10" :limit="5" prev-text="prev" next-text="next" v-model="page"/>
+            </nav> -->
+            <!-- </b-row> -->
+        </b-card> 
+-->

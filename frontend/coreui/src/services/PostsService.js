@@ -1,8 +1,4 @@
-/**
- * created by Faruq
- * 13 dec 2018
- * develop for final project :)
- */
+
 import axios from 'axios'
 import { type } from 'os';
 var Api = require("../services/Api")
@@ -61,7 +57,7 @@ export default {
       }
     })
   },
-  getSapiDetail(token,id){
+  getTanamanDetail(token,id){
     return axios.get(Api.tanamanUrl()+id+'/tanamandetail',{
       headers:{
         Authorization:token

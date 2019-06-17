@@ -8,6 +8,10 @@ var morgan = require('morgan');
 var mongoose = require('mongoose');
 var passport = require('passport');
 var config = require('./config/database');
+var cors = require('cors')
+
+
+
 
 mongoose.connect(config.database, {
   useNewUrlParser: true}).then(
@@ -18,16 +22,26 @@ mongoose.set('useCreateIndex', true);
 var api = require('./routes/api');
 var tanaman = require('./routes/tanaman');
 var perangkat = require('./routes/perangkat');
-
+var cuaca = require('./routes/cuaca');
 var app = express();
-
+// var server = app.listen(3000);
+// var io = require('socket.io').listen(server);
+//app.use(cors())
+//app.options('*', cors())
 // view engine setup
+// app.all('/*', function(req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   next();
+// });
+
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Origin","*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Content-Type", "application/json");
   next();
 });
 
@@ -47,6 +61,7 @@ app.get('/', function(req, res) {
 app.use('/api/user', api);
 app.use('/api/tanaman', tanaman);
 app.use('/api/perangkat', perangkat);
+app.use('/api/cuaca', cuaca)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
