@@ -7,8 +7,12 @@ var Tanaman = require("../models/tanaman");
 const socketApp = require('../socket/socket-app');
 var ObjectId = require('mongoose').Types.ObjectId;
 var farmerRepositories = require('../repositories/farmerRepositories');
-var ConnectRaspi = require('../services/ConnectRaspi');
+// var ConnectRaspi = require('../services/ConnectRaspi');
+var cuacaRepositories = require('../repositories/cuacaRepositories');
 var Constants = require('../services/Constants');
+const axios = require('axios');
+const apiKey = '2717607dd9cced6c8f6e6b9d58d30db3';
+          
 ///var admin = require("firebase-admin");
 ///var serviceAccount = require("../seecowapp-firebase-adminsdk-3hlhu-22888ee3ed.json");
 /**
@@ -206,7 +210,7 @@ const tanamanRepositories = {
     return result
   },
 
-  createTanaman: async(id, namaTanaman, luasLahan, lokasiLahan)=>{
+  createTanaman: async(id, namaTanaman, luasLahan, lokasiLahan, spesies, tanggal)=>{
     let checkFarmer = await farmerRepositories.getFarmerByIdUser(id)
     if(checkFarmer){
       /**
@@ -244,28 +248,42 @@ const tanamanRepositories = {
           namaTanaman: namaTanaman,
           luasLahan:luasLahan,
           lokasiLahan:lokasiLahan,
+          spesies:spesies,
+          tanggal:tanggal,
           perangkat: sub_perangkat
         });
         let saveTanaman = await newTanaman.save()
         if(saveTanaman){
           return saveTanaman
+          // let url = await axios.get("http://api.openweathermap.org/data/2.5/weather?q="+saveTanaman.lokasiLahan+"&units=imperial&appid=2717607dd9cced6c8f6e6b9d58d30db3");
+          // let url = "http://api.openweathermap.org/data/2.5/weather?q="+surabaya+"&units=imperial&appid="+apikey
+          // return url
+          // let response_body = await axios.get(url);
+          // return url.data;
         }
+        // if(saveTanaman){
+        //   let createOnRaspi = await ConnectRaspi.createInitial(saveTanaman._id)
+        //   if(createOnRaspi){
+        //     let updateTanaman = await 
+        //     Tanaman.update({
+        //       _id: saveTanaman._id
+        //     },{
+        //       $set: {
+        //         "perangkat.idOnRaspi": createOnRaspi.data.perangkat._id
+        //       }
+        //     }
+        //   )
+        //   if(updateTanaman){
+        //     return createOnRaspi.data
+        //   }
+        //  }
+        // }
         if(saveTanaman){
-          let createOnRaspi = await ConnectRaspi.createInitial(saveTanaman._id)
-          if(createOnRaspi){
-            let updateTanaman = await 
-            Tanaman.update({
-              _id: saveTanaman._id
-            },{
-              $set: {
-                "perangkat.idOnRaspi": createOnRaspi.data.perangkat._id
-              }
-            }
-          )
-          if(updateTanaman){
-            return createOnRaspi.data
+          // city : saveTanaman.lokasiLahan,
+          let getweather = await cuacaRepositories.getweather(saveTanaman.lokasiLahan)
+          if (getweather) {
+            console.log(getweather)
           }
-         }
         }
      
     }

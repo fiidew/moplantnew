@@ -95,12 +95,10 @@
               </p>
           </b-alert>
         <b-form-group>
-          <b-form-input type="text" id="name" v-model="plantName" placeholder="Enter your plant ID or name"></b-form-input><br>
-          <b-form-input type="text" id="large" v-model="plantLarge" placeholder="Enter your plant Large Area"></b-form-input><br>
-          <b-form-input type="text" id="location" v-model="plantLocation" placeholder="Enter your plant Location"></b-form-input>
-        </b-form-group>
+          <b-form-input type="text" id="city" v-model="city" placeholder="Enter your plant ID or name"></b-form-input><br>
+          </b-form-group>
       </div>
-      <b-btn class="mt-3" variant="outline-warning" block @click="createPlant">Register</b-btn>
+      <b-btn class="mt-3" variant="outline-warning" block @click="getcuaca">Register</b-btn>
     </b-modal>
 
 
@@ -219,10 +217,8 @@ export default {
        * post create plant data
        */
       this.successAlert = []
-      const response = await PostsService.createPlant(window.localStorage.getItem("token"),{
-                          namaTanaman: this.plantName,
-                          luasLahan:this.plantLarge,
-                          lokasiLahan:this.plantLocation
+      const response = await PostsService.getcuaca({
+                          city: this.city
                         });
       this.$refs.myModalRef.hide()
       if(response.data.status){
@@ -235,12 +231,12 @@ export default {
       /**
        * this function for action when register plant button on clik
        */
-      if(this.plantName && this.plantLarge && this.plantLocation){
+      if(this.city){
         
         this.postCreatePlantData()
       }
       this.errors = []
-      if(!this.plantName || !this.plantLarge || !this.plantLocation){
+      if(!this.city){
         this.errors.push('Sorry cant blank :( !');
       }
      

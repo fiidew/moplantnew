@@ -2,9 +2,9 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 const PerangkatSchema = new Schema({
-  idOnRaspi: {
-    type: Schema.Types.ObjectId,
-  },
+  // idOnRaspi: {
+  //   type: Schema.Types.ObjectId,
+  // },
   status: Number,
   data: [{
     tanggal:{ type: Date, default: Date.now },
@@ -31,6 +31,14 @@ var TanamanSchema = new Schema({
   lokasiLahan: {
     type: String,
     required: true
+  },
+  spesies: {
+    type: String,
+    required: true
+  },
+  tanggal: {
+    type: Date,
+    required :true
   },
   perangkat:{
     type: PerangkatSchema,

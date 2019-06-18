@@ -164,7 +164,7 @@ module.exports = {
       let result_decode = jwt.verify(token, config.secret)
       let response = new Response()
         try {
-          response.setData(await tanamanRepositories.createTanaman(result_decode._doc._id,req.body.namaTanaman,req.body.luasLahan,req.body.lokasiLahan ))
+          response.setData(await tanamanRepositories.createTanaman(result_decode._doc._id,req.body.namaTanaman,req.body.luasLahan,req.body.lokasiLahan, req.body.spesies, req.body.tanggal))
         } catch (e) {
           response.setStatus(false)
           response.setMessage(e)

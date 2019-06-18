@@ -65,10 +65,14 @@
               <div class="small text-muted">Celcius</div>
             </div>
             <!--
-            <div slot="key-status" slot-scope="data">
-              <b-badge :variant="getBadge(data.item.perangkat.status)">{{ data.item.perangkat.status == 0 ? "Nonactive": data.item.perangkat.status == 1 ? "Active":"Pending" }}</b-badge>
-            </div>
+            ini mencobaaaaaaaaaaaaaaaaa
             -->
+
+            <div slot="key-ph" slot-scope="data">
+              <strong>{{data.item.perangkat.data[data.item.perangkat.data.length-1].ph.toFixed(2)}}</strong>
+              <div class="small text-muted">Celcius</div>
+            </div>
+
             <div slot="key-action" slot-scope="data">
               <b-button variant="primary" size="sm" @click="toDetail(data.item._id)">Show Details</b-button>
             </div>
@@ -98,7 +102,9 @@
         <b-form-group>
           <b-form-input type="text" id="name" v-model="plantName" placeholder="Enter your plant ID or name"></b-form-input><br>
           <b-form-input type="text" id="large" v-model="plantLarge" placeholder="Enter your plant Large Area"></b-form-input><br>
-          <b-form-input type="text" id="location" v-model="plantLocation" placeholder="Enter your plant Location"></b-form-input>
+          <b-form-input type="text" id="location" v-model="plantLocation" placeholder="Enter your plant Location"></b-form-input><br>
+          <b-form-input type="text" id="spesies" v-model="plantSpesies" placeholder="Enter your plant spesies"></b-form-input><br>
+          <b-form-input type="text" id="date" v-model="plantDate" placeholder="Enter your Date"></b-form-input>
         </b-form-group>
       </div>
       <b-btn class="mt-3" variant="outline-success" block @click="createPlant">Register</b-btn>
@@ -195,8 +201,8 @@ export default {
         { key: 'key-suhuUdara', 
           label: 'Temperature' 
         },
-        { key: 'key-status', 
-          label: 'Weather Forecast'
+        { key: 'key-ph', 
+          label: 'Ph'
         },
         {
           key: 'key-action',
@@ -225,7 +231,10 @@ export default {
       const response = await PostsService.createPlant(window.localStorage.getItem("token"),{
                           namaTanaman: this.plantName,
                           luasLahan:this.plantLarge,
-                          lokasiLahan:this.plantLocation
+                          lokasiLahan:this.plantLocation,
+                          spesies:this.plantSpesies,
+                          tanggal:this.plantDate
+
                         });
       this.$refs.myModalRef.hide()
       if(response.data.status){
@@ -238,12 +247,12 @@ export default {
       /**
        * this function for action when register plant button on clik
        */
-      if(this.plantName && this.plantLarge && this.plantLocation){
+      if(this.plantName && this.plantLarge && this.plantLocation && this.plantSpesies && this.plantDate){
         
         this.postCreatePlantData()
       }
       this.errors = []
-      if(!this.plantName || !this.plantLarge || !this.plantLocation){
+      if(!this.plantName || !this.plantLarge || !this.plantLocation || !this.plantSpesies || !this.plantDate){
         this.errors.push('Sorry cant blank :( !');
       }
      
