@@ -12,6 +12,7 @@ var cuacaRepositories = require('../repositories/cuacaRepositories');
 var Constants = require('../services/Constants');
 const axios = require('axios');
 const apiKey = '2717607dd9cced6c8f6e6b9d58d30db3';
+var dataCuaca;
           
 ///var admin = require("firebase-admin");
 ///var serviceAccount = require("../seecowapp-firebase-adminsdk-3hlhu-22888ee3ed.json");
@@ -99,7 +100,7 @@ const tanamanRepositories = {
         return result;
   },
 
-    getWeather: async(city)=>{
+  getWeather: async(city)=>{
       let url = "http://api.apixu.com/v1/forecast.json?key=d88585dc80d142ffba495649192206&q="+city
   // let url = "http://api.openweathermap.org/data/2.5/weather?q="+city+"&units=imperial&appid="+apiKey
   // return url
@@ -108,7 +109,10 @@ const tanamanRepositories = {
   // let weather = JSON.parse(response_body);
   // console.log("asdasdasd")
   // console.log(response_body)
-  return response_body.data;
+  //return response_body.data;
+  this.dataCuaca=response_body.data;
+  return this.dataCuaca;
+  //return this.dataCuaca.forecast.forecastday[0].day.totalprecip_mm;
   },
 
   getTanamanByFarmers: async(id)=>{
@@ -138,7 +142,8 @@ const tanamanRepositories = {
     var tmpSuhuUdara = Number(suhuUdara)
     var tmpKondisi = Number(kondisi)
     // var tmpKondisi = Constants.ABNORMAL_CONDITION
-    if (tmpKelembabanTanah < Constants.SOIL_MOISTURE_LOWER_LIMIT || tmpKelembabanTanah > Constants.SOIL_MOISTURE_UPPER_LIMIT || tmpSuhuUdara < Constants.TEMPERATURE_LOWER_LIMIT || tmpSuhuUdara > Constants.TEMPERATURE_UPPER_LIMIT) {
+    //if (tmpKelembabanTanah < Constants.SOIL_MOISTURE_LOWER_LIMIT || tmpKelembabanTanah > Constants.SOIL_MOISTURE_UPPER_LIMIT || tmpSuhuUdara < Constants.TEMPERATURE_LOWER_LIMIT || tmpSuhuUdara > Constants.TEMPERATURE_UPPER_LIMIT) {
+    if (dataCuaca.forecast.forecastday[0].day.totalprecip_mm > 0) {
       /**
        * Abnormal
        */
