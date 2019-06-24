@@ -14,7 +14,7 @@ var FarmerSchema = new Schema({
     required: true
   },
   telp: {
-    type: Number,
+    type: String,
     required: true
   }
 });

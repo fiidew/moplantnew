@@ -22,7 +22,7 @@ module.exports = {
         response.setData(await userRepositories.farmerSignup(req.body.username,req.body.password,req.body.nama,req.body.alamat,req.body.telp, req.body.role))
       }catch (e) {
         response.setStatus(false)
-        response.setMessage(e)
+        response.setMessage(JSON.stringify(e))
       }
       res.json(response)
     }
@@ -40,7 +40,7 @@ module.exports = {
       }
     }catch (e){
       response.setStatus(false)
-      response.setMessage(e)
+      response.setMessage(JSON.stringify(e))
     }
     res.json(response)
   },
