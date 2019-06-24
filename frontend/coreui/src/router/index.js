@@ -7,6 +7,7 @@ const DefaultContainer = () => import('@/containers/DefaultContainer')
 // Views
 const Dashboard = () => import('@/views/Dashboard')
 const Details = () => import('@/views/Details')
+const DetailsCuaca = () => import('@/views/WeatherForecast')
 const Admin = () => import('@/views/admin/Admin')
 const RequestedCows = () => import('@/views/admin/RequestedCows')
 const Label = () => import('@/views/admin/Label')
@@ -95,6 +96,11 @@ export default new Router({
           path: '/:id/details',
           name : 'Details',
           component: Details
+        },
+        {
+          path: '/:id/detailscuaca',
+          name : 'DetailsCuaca',
+          component: DetailsCuaca
         },
         {
           path: '/:id/historymonitoring',

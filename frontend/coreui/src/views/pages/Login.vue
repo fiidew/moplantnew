@@ -42,7 +42,7 @@
                 </b-form>
               </b-card-body>
             </b-card>
-            <b-card no-body class="text-white bg-info py-5">
+            <b-card no-body class="text-white bg-success py-5">
               <b-card-body class="text-center">
                 <div>
                   <h2>Sign up</h2>

@@ -23,6 +23,25 @@ module.exports = {
   //       res.json(response.unAuthorized());
   //     }
   // },
+  getWeather: async(req, res)=>{ 
+    let token = Token.authorizationToken(req.headers);
+    if(token){
+    let response = new Response()
+    try{
+      // response.setData(await tananmanRepositories.streamUpdateData(req.body.kelembaban,req.body.ph,req.body.status,req.params.id))
+      response.setData(await tanamanRepositories.getWeather(req.params.city))
+    }catch(e){
+      response.setStatus(false)
+      response.setMessage(e)
+    }
+    res.json(response) 
+    // return "sdsd"
+    }else{
+        res.json(response.unAuthorized());
+      }
+
+  },
+
   getDataToday : async(req,res)=>{
     let token = Token.authorizationToken(req.headers);
     var today = new Date();
@@ -113,7 +132,7 @@ module.exports = {
     let response = new Response()
     try{
       // response.setData(await tananmanRepositories.streamUpdateData(req.body.kelembaban,req.body.ph,req.body.status,req.params.id))
-      response.setData(await tanamanRepositories.streamUpdateData(req.body.kelembabanTanah, req.body.ph, req.body.kelembabanUdara, req.body.suhuUdara, req.body.status, req.params.id))
+      response.setData(await tanamanRepositories.streamUpdateData(req.body.kelembabanTanah, req.body.ph, req.body.kelembabanUdara, req.body.suhuUdara, req.body.kondisi, req.body.status, req.params.id))
     }catch(e){
       response.setStatus(false)
       response.setMessage(e)

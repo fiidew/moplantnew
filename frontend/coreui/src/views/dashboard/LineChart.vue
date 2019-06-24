@@ -5,7 +5,7 @@ import { getStyle, hexToRgba } from '@coreui/coreui/dist/js/coreui-utilities'
 
 export default {
   extends: Line,
-  props: ["datasoilmoisture","datahumidity","datatemperature","datasoilmoisturelimit","datahumiditylimit","datatemperaturelimit","soilmoistureupperlimit","humidityupperlimit","temperatureupperlimit","options","labels"],
+  props: ["datasoilmoisture","datahumidity","datatemperature","dataph","datasoilmoisturelimit","datahumiditylimit","datatemperaturelimit","dataphlimit","soilmoistureupperlimit","humidityupperlimit","temperatureupperlimit","phupperlimit","options","labels"],
   mounted() {
     this.renderLineChart();
   },
@@ -19,6 +19,9 @@ export default {
     chartDataTemperature: function(){
       return this.datatemperature;
     },
+    chartDataPh: function(){
+      return this.dataph;
+    },
     chartDataSoilMoistureLimit: function(){
       return this.datasoilmoisturelimit;
     },
@@ -28,6 +31,9 @@ export default {
     chartDataTemperatureLimit: function(){
       return this.datatemperaturelimit;
     },
+    chartDataPhLimit: function(){
+      return this.dataphlimit;
+    },
     chartDataSoilMoistureUpperLimit: function(){
       return this.soilmoistureupperlimit;
     },
@@ -36,6 +42,9 @@ export default {
     },
     chartDataTemperatureUpperLimit: function(){
       return this.temperatureupperlimit;
+    },
+    chartDataPhUpperLimit: function(){
+      return this.phupperlimit;
     },
     labelsData: function(){
       return this.labels;
@@ -69,13 +78,22 @@ export default {
             data: this.chartDataHumidity
             //data: [150, 430, 210, 300, 410, 200, 400, 200, 140, 210]
           },
-                    {
+          {
             label: 'Temperature',
             backgroundColor: 'transparent',
             borderColor: brandSuccess,
             pointHoverBackgroundColor: '#fff',
             borderWidth: 4,
             data: this.chartDataTemperature
+            //data: [100, 400, 200, 100, 210, 100, 400, 200, 100, 210]
+          },
+          {
+            label: 'Ph',
+            backgroundColor: 'transparent',
+            borderColor: brandWarning,
+            pointHoverBackgroundColor: '#fff',
+            borderWidth: 4,
+            data: this.chartDataPh
             //data: [100, 400, 200, 100, 210, 100, 400, 200, 100, 210]
           },
           /*

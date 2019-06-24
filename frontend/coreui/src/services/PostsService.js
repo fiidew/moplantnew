@@ -67,6 +67,13 @@ export default {
       }
     })
   },
+  getCuacaDetail(token,city){
+    return axios.get(Api.tanamanUrl()+city+'/getcuaca',{
+      headers:{
+        Authorization:token
+      }
+    })
+  },
   getDataToday(token, params){
     return axios.post(Api.tanamanUrl()+'data-today',params,{
       headers:{

@@ -20,7 +20,8 @@ const cuacaRepositories = {
   // return weather;
   // }
   getWeather: async(city)=>{
-  let url = "http://api.openweathermap.org/data/2.5/weather?q="+city+"&units=imperial&appid="+apiKey
+  //let url = "http://api.openweathermap.org/data/2.5/weather?q="+city+"&units=imperial&appid="+apiKey
+  let url = "http://api.apixu.com/v1/forecast.json?key=d88585dc80d142ffba495649192206&q="+city
   // return url
   let response_body = await axios.get(url);
   // console.log(response_body);

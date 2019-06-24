@@ -76,6 +76,10 @@
             <div slot="key-action" slot-scope="data">
               <b-button variant="primary" size="sm" @click="toDetail(data.item._id)">Show Details</b-button>
             </div>
+
+             <div slot="key-action-ya" slot-scope="data">
+              <b-button variant="primary" size="sm" @click="toDetailCuaca(data.item.lokasiLahan)">Detail Cuaca</b-button>
+            </div>
             
           </b-table> 
             
@@ -160,6 +164,8 @@ export default {
       plantName:"",
       plantLarge:"",
       plantLocation:"",
+      plantSpesies:"",
+      plantDate:"",
       socket : io(Constants.SOCKET_SERVER),
       warningModal: false,
       DeviceNonActive:0,
@@ -207,6 +213,10 @@ export default {
         {
           key: 'key-action',
           label: 'Details'
+        },
+        {
+          key: 'key-action-ya',
+          label: 'DetailsCuaca'
         }
       ]
     }
@@ -396,6 +406,9 @@ export default {
     toDetail (id){
       this.$router.push({ name: 'Details', params: {id : id} })
       
+    },
+    toDetailCuaca (city){
+      this.$router.push({ name: 'DetailsCuaca', params: {city : city} })
     }
   } 
 }

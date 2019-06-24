@@ -6,13 +6,18 @@
     <b-card>
       <b-row>
         <b-col sm="5">
-          <h4><img src="img/plant/plant.png" width="50px" alt="CoreUI Logo"> {{nameOfPlant}}</h4>
+            <h6>Name Of Plant : {{nameOfPlant}}</h6>
+            <h6>Spesies : {{spesiesOfPlant}}</h6>
+            <h6>Location : {{locationOfPlant}}</h6>
+            <h6>Large Area : {{largeOfPlant}}</h6>
+          <!--
+          <h4><img src="img/plant/plant.png" width="50px" alt="CoreUI Logo">{{nameOfPlant}}</h4>
           <!-- <h4 id="traffic" class="card-title mb-0">Graph</h4> -->
           <!-- <div class="small text-muted">{{dateOnFormat}}</div> -->
-          <b-badge v-bind:variant="conditions">{{CurrentConditions}}</b-badge> | 
-           <b-badge v-bind:variant="statusDevice">{{statusDeviceInStr}}</b-badge> 
+          <!-- <b-badge v-bind:variant="conditions">{{CurrentConditions}}</b-badge> -->
+          <!-- | <b-badge v-bind:variant="statusDevice">{{statusDeviceInStr}}</b-badge> -->
         </b-col>
-        <!--
+        
         <b-col sm="7">
           <b-form inline class="float-right">
             <label class="mr-sm-2" for="inlineInput1">Start: </label>
@@ -26,10 +31,10 @@
             </div>
           </b-form> 
         </b-col>
-        -->
+       
       </b-row>
       <bounce-spinner v-if="isLoading"></bounce-spinner>
-      <line-chart v-if="isProcess" :labels="labelsData" :datasoilmoisture="dataChartSoilMoisture" :datahumidity="dataChartHumidity" :datatemperature="dataChartTemperature" :datasoilmoisturelimit="dataChartSoilMoistureLimit" :datahumiditylimit="dataChartHumidityLimit" :datatemperaturelimit="dataChartTemperatureLimit" :soilmoistureupperlimit="dataChartSoilMoistureUpperLimit" :humidityupperlimit="dataChartHumidityUpperLimit" :temperatureupperlimit="dataChartTemperatureUpperLimit" :options="{responsive: true, maintainAspectRatio: false}"></line-chart>
+      <line-chart v-if="isProcess" :labels="labelsData" :datasoilmoisture="dataChartSoilMoisture" :datahumidity="dataChartHumidity" :datatemperature="dataChartTemperature" :dataph="dataChartPh" :datasoilmoisturelimit="dataChartSoilMoistureLimit" :datahumiditylimit="dataChartHumidityLimit" :datatemperaturelimit="dataChartTemperatureLimit" :dataphlimit="dataChartPhLimit" :soilmoistureupperlimit="dataChartSoilMoistureUpperLimit" :humidityupperlimit="dataChartHumidityUpperLimit" :temperatureupperlimit="dataChartTemperatureUpperLimit" :phupperlimit="dataChartPhUpperLimit" :options="{responsive: true, maintainAspectRatio: false}"></line-chart>
       <div slot="footer">
         <b-row class="text-center">
           <b-col class="mb-sm-6 mb-0">
@@ -49,11 +54,55 @@
             <strong>{{currentTemperature}}</strong>
              <b-progress height={} class="progress-xs mt-2" :precision="1" variant="secondary" v-bind:value="100"></b-progress>
           </b-col>
+
+          <b-col class="mb-sm-6 mb-0">
+            <div class="text-muted">Ph</div>
+            <strong>{{currentPh}}</strong>
+             <b-progress height={} class="progress-xs mt-2" :precision="1" variant="secondary" v-bind:value="100"></b-progress>
+          </b-col>
+
         </b-row>
       </div>
     </b-card>
   
     <!-- ini tempat tabel -->
+    <b-card>
+            <!-- <b-row>  -->
+              
+            <!-- <b-table striped outlined stacked="sm" hover :items="tableItems" :fields="tableFields" head-variant="light" :current-page="currentPage" :per-page="perPage"> -->
+           <b-table :hover="hover" :striped="striped" :bordered="bordered" :small="small" :fixed="fixed" responsive="sm" :items="tableItems" :fields="tableFields" :current-page="currentPage" :per-page="perPage">
+           
+            <div slot="key-kondisi" slot-scope="data">
+              <b-badge :variant="getKondisi(data.item.kondisi)">{{data.item.kondisi == 0 ? "Abnormal":"Normal"}}</b-badge>
+            </div>
+            
+            
+            <div slot="key-kelembabanTanah" slot-scope="data">
+              <strong>{{data.item.kelembabanTanah.toFixed(2)}}</strong>
+              <div class="small text-muted">%RH</div>
+            </div>
+            <div slot="key-kelembabanUdara" slot-scope="data">
+              <strong>{{data.item.kelembabanUdara.toFixed(2)}}</strong>
+              <div class="small text-muted">%</div>
+            </div>
+            <div slot="key-suhuUdara" slot-scope="data">
+              <strong>{{data.item.suhuUdara.toFixed(2)}}</strong>
+              <div class="small text-muted">Celcius</div>
+            </div>
+             <div slot="key-tanggal" slot-scope="data">
+              <b-badge :variant="dateFormatter(data.item.tanggal)">{{data.item.tanggal | formatDate}}</b-badge>
+              
+            </div>
+            </b-table>
+            <nav>
+                <b-pagination :total-rows="getRowCount(tableItems)" :per-page="perPage" v-model="currentPage" prev-text="Prev" next-text="Next" hide-goto-end-buttons/>
+            </nav>
+            <!-- <nav>
+              <b-pagination size="sm" :total-rows="tableItemsLength" :per-page="10" :limit="5" prev-text="prev" next-text="next" v-model="page"/>
+            </nav> -->
+            <!-- </b-row> -->
+        </b-card> 
+
      
   
         </b-card>
@@ -137,23 +186,31 @@ export default {
       dataChartSoilMoisture: [],
       dataChartHumidity: [],
       dataChartTemperature: [],
+      dataChartPh: [],
       dataChartSoilMoistureLimit:[],
       dataChartSoilMoistureUpperLimit:[],
       dataChartHumidityLimit:[],
       dataChartHumidityUpperLimit:[],
       dataChartTemperatureLimit:[],
       dataChartTemperatureUpperLimit:[],
+      dataChartPhLimit:[],
+      dataChartPhUpperLimit:[],
       labelsData:[],
       statusDeviceInStr:"",
       statusDevice:"",
       conditions:"",
       test: [4, 4, 4, 4, 4, 4],
       nameOfPlant:"",
+      spesiesOfPlant:"",
+      locationOfPlant:"",
+      largeOfPlant:"",
+      dateOfPlant:"",
       socket : io('localhost:3000'),
       CurrentConditions:"",
       dateOnFormat:"",
       currentTemperature:0,
       currentHumidity:0,
+      currentPh:0,
       currentSoilMoisture:0,
       tableItems: [],
       tableFields: [
@@ -229,42 +286,52 @@ export default {
         this.currentTemperature= tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].suhuUdara.toFixed(2);
         this.currentSoilMoisture = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kelembabanTanah.toFixed(2);
         this.currentHumidity=tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kelembabanUdara.toFixed(2);
+        this.currentPh=tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].ph.toFixed(2);
         this.getBadge(tanamanData.perangkat.status);
         this.getKondisi(tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kondisi);
         this.dateFormatter(tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].tanggal);
         // Chart operation
-        if(this.dataChartSoilMoisture.length > 120){
+        if(this.dataChartSoilMoisture.length > 100){
           this.dataChartSoilMoisture.shift();
           this.dataChartHumidity.shift();
           this.dataChartTemperature.shift();
+          this.dataChartPh.shift();
           this.dataChartSoilMoistureLimit.shift();
           this.dataChartSoilMoistureUpperLimit.shift();
           this.dataChartHumidityLimit.shift();
           this.dataChartHumidityUpperLimit.shift();
           this.dataChartTemperatureLimit.shift();
           this.dataChartTemperatureUpperLimit.shift();
+          this.dataChartPhLimit.shift();
+          this.dataChartPhUpperLimit.shift();
           this.labelsData.shift();
 
           this.dataChartSoilMoisture.push(this.currentSoilMoisture);
           this.dataChartHumidity.push(this.currentHumidity);
           this.dataChartTemperature.push(this.currentTemperature);
+          this.dataChartPh.push(this.currentPh);
           this.dataChartSoilMoistureLimit.push(48);
           this.dataChartSoilMoistureUpperLimit.push(80);
           this.dataChartHumidityLimit.push(48);
           this.dataChartHumidityUpperLimit.push(80);
           this.dataChartTemperatureLimit.push(37);
           this.dataChartTemperatureUpperLimit.push(39);
+          this.dataChartPhLimit.push(37);
+          this.dataChartPhUpperLimit.push(39);
           this.labelsData.push(this.dateOnFormat);
         }else{
           this.dataChartSoilMoisture.push(this.currentSoilMoisture);
           this.dataChartHumidity.push(this.currentHumidity);
           this.dataChartTemperature.push(this.currentTemperature);
+          this.dataChartPh.push(this.currentPh);
           this.dataChartSoilMoistureLimit.push(48);
           this.dataChartSoilMoistureUpperLimit.push(80);
           this.dataChartHumidityLimit.push(48);
           this.dataChartHumidityUpperLimit.push(80);
           this.dataChartTemperatureLimit.push(37);
           this.dataChartTemperatureUpperLimit.push(39);
+          this.dataChartPhLimit.push(37);
+          this.dataChartPhUpperLimit.push(39);
           this.labelsData.push(this.dateOnFormat);
         }
         
@@ -277,24 +344,32 @@ export default {
       this.dataChartSoilMoisture= []
       this.dataChartHumidity= []
       this.dataChartTemperature=[]
+      this.dataChartPh=[]
       this.dataChartSoilMoistureLimit=[]
       this.dataChartSoilMoistureUpperLimit=[]
       this.dataChartHumidityLimit=[]
       this.dataChartHumidityUpperLimit=[]
       this.dataChartTemperatureLimit=[]
       this.dataChartTemperatureUpperLimit=[]
+      this.dataChartPhLimit=[]
+      this.dataChartPhUpperLimit=[]
       this.labelsData=[]
       this.tableItems=[]
       const response = await this.fetchDataToday();
       let tanamanData = response.data[0]; //because response data in array
       // console.log(this.selected)
       this.nameOfPlant = tanamanData.namaTanaman;
+      this.spesiesOfPlant=tanamanData.spesies;
+      this.locationOfPlant=tanamanData.lokasiLahan;
+      this.largeOfPlant=tanamanData.luasLahan;
+      this.dateOfPlant=tanamanData.tanggal;
       // this.tableItems = tanamanData.perangkat.data;
       this.getBadge(tanamanData.perangkat.status);
       this.getKondisi(tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kondisi);
       this.currentTemperature = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].suhuUdara.toFixed(2);
       this.currentHumidity = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kelembabanUdara.toFixed(2);
       this.currentSoilMoisture = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kelembabanTanah.toFixed(2);
+      this.currentPh = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].ph.toFixed(2);
       this.soket();
     },
     async processDataInTime(){
@@ -304,12 +379,15 @@ export default {
       this.dataChartSoilMoisture= []
       this.dataChartHumidity= []
       this.dataChartTemperature=[]
+      this.dataChartPh=[]
       this.dataChartSoilMoistureLimit=[]
       this.dataChartSoilMoistureUpperLimit=[]
       this.dataChartHumidityLimit=[]
       this.dataChartHumidityUpperLimit=[]
       this.dataChartTemperatureLimit=[]
       this.dataChartTemperatureUpperLimit=[]
+      this.dataChartPhLimit=[]
+      this.dataChartPhUpperLimit=[]
       this.labelsData=[]
       this.tableItems = []
       const response = await this.fetchDataInTime();
@@ -323,16 +401,20 @@ export default {
       this.currentTemperature = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].suhuUdara.toFixed(2);
       this.currentHumidity = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kelembabanUdara.toFixed(2);
       this.currentSoilMoisture = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kelembabanTanah.toFixed(2);
+      this.currentPh = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].ph.toFixed(2);
       for(var i=0;i<tanamanData.perangkat.data.length;i++){
         this.dataChartSoilMoisture.push(tanamanData.perangkat.data[i].kelembabanTanah.toFixed(2));
         this.dataChartHumidity.push(tanamanData.perangkat.data[i].kelembabanUdara.toFixed(2));
         this.dataChartTemperature.push(tanamanData.perangkat.data[i].suhuUdara.toFixed(2));
+        this.dataChartPh.push(tanamanData.perangkat.data[i].ph.toFixed(2));
         this.dataChartSoilMoistureLimit.push(48);
         this.dataChartSoilMoistureUpperLimit.push(80);
         this.dataChartHumidityLimit.push(48);
         this.dataChartHumidityUpperLimit.push(80);
         this.dataChartTemperatureLimit.push(37);
         this.dataChartTemperatureUpperLimit.push(39);
+        this.dataChartPhLimit.push(37);
+        this.dataChartPhUpperLimit.push(39);
         this.dateFormatter(tanamanData.perangkat.data[i].tanggal);
         this.labelsData.push(this.dateOnFormat);
       }

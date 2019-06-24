@@ -33,6 +33,7 @@ admin.initializeApp({
 });
 
 const tanamanRepositories = {
+
   getTanamanOnSpecificTime: async(id,start,end)=>{
     let result = await Tanaman.aggregate(
 
@@ -68,7 +69,7 @@ const tanamanRepositories = {
           // Stage 4
           {
             $group: {
-                _id:{_id : "$_id",idFarmer: "$idFarmer",namaTanaman: "$namaTanaman",status: "$perangkat.status",idOnRaspi:"$perangkat.idOnRaspi"},
+                _id:{_id : "$_id",idFarmer: "$idFarmer",namaTanaman: "$namaTanaman",luasLahan: "$luasLahan",lokasiLahan: "$lokasiLahan",spesies: "$spesies",tanggal: "$tanggal",status: "$perangkat.status",idOnRaspi:"$perangkat.idOnRaspi"},
                 listResult : {$push: "$perangkat.data"}
                 
             }
@@ -81,6 +82,10 @@ const tanamanRepositories = {
                 _id : "$_id._id",
                 idFarmer: "$_id.idFarmer",
                 namaTanaman: "$_id.namaTanaman",
+                luasLahan: "$_id.luasLahan",
+                lokasiLahan: "$_id.lokasiLahan",
+                spesies: "$_id.spesies",
+                tanggal: "$_id.tanggal",
                 perangkat:{
                   status : "$_id.status",
                   data: "$listResult",
@@ -92,6 +97,18 @@ const tanamanRepositories = {
       
         ])
         return result;
+  },
+
+    getWeather: async(city)=>{
+      let url = "http://api.apixu.com/v1/forecast.json?key=d88585dc80d142ffba495649192206&q="+city
+  // let url = "http://api.openweathermap.org/data/2.5/weather?q="+city+"&units=imperial&appid="+apiKey
+  // return url
+  let response_body = await axios.get(url);
+  // console.log(response_body);
+  // let weather = JSON.parse(response_body);
+  // console.log("asdasdasd")
+  // console.log(response_body)
+  return response_body.data;
   },
 
   getTanamanByFarmers: async(id)=>{
@@ -110,7 +127,7 @@ const tanamanRepositories = {
   },
   
   // streamUpdateData : async(kelembaban, ph, status,id) => {
-    streamUpdateData : async(kelembabanTanah, ph, kelembabanUdara, suhuUdara, status, id) => {
+    streamUpdateData : async(kelembabanTanah, ph, kelembabanUdara, suhuUdara, kondisi, status, id) => {
     var today = new Date();
     /**
      * condition dairy cows healty status
@@ -119,12 +136,13 @@ const tanamanRepositories = {
     var tmpPh = Number(ph)
     var tmpKelembabanUdara = Number(kelembabanUdara)
     var tmpSuhuUdara = Number(suhuUdara)
-    var tmpKondisi = Constants.NORMAL_CONDITION
+    var tmpKondisi = Number(kondisi)
+    // var tmpKondisi = Constants.ABNORMAL_CONDITION
     if (tmpKelembabanTanah < Constants.SOIL_MOISTURE_LOWER_LIMIT || tmpKelembabanTanah > Constants.SOIL_MOISTURE_UPPER_LIMIT || tmpSuhuUdara < Constants.TEMPERATURE_LOWER_LIMIT || tmpSuhuUdara > Constants.TEMPERATURE_UPPER_LIMIT) {
       /**
        * Abnormal
        */
-      tmpKondisi = Constants.ABNORMAL_CONDITION
+      // tmpKondisi = Constants.ABNORMAL_CONDITION
       
       /**
        * Push notif to FCM

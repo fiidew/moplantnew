@@ -13,7 +13,7 @@ module.exports = {
     let response = new Response()
     try{
       // response.setData(await tananmanRepositories.streamUpdateData(req.body.kelembaban,req.body.ph,req.body.status,req.params.id))
-      response.setData(await cuacaRepositories.getWeather(req.body.city))
+      response.setData(await cuacaRepositories.getWeather(req.params.city))
     }catch(e){
       response.setStatus(false)
       response.setMessage(e)

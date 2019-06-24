@@ -5,7 +5,7 @@ var express = require('express');
 var router = express.Router();
 const cuaca_controller = require('../controllers/cuacaController');
 
-router.post('/getcuaca',cuaca_controller.getWeather);
+router.get('/:city/getcuaca',cuaca_controller.getWeather);
 // router.delete('/:id/delete',passport.authenticate('jwt', { session: false}), tanaman_controller.tanaman_delete);
 // router.put('/:id/update',passport.authenticate('jwt', { session: false}),tanaman_controller.tanaman_update);
 // router.get('/showtanaman',passport.authenticate('jwt', { session: false}),tanaman_controller.tanaman_show_by_farmer);
