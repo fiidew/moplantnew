@@ -70,7 +70,7 @@ const tanamanRepositories = {
           // Stage 4
           {
             $group: {
-                _id:{_id : "$_id",idFarmer: "$idFarmer",namaTanaman: "$namaTanaman", status: "$perangkat.status",idOnRaspi:"$perangkat.idOnRaspi"},
+                _id:{_id : "$_id",idFarmer: "$idFarmer",namaTanaman: "$namaTanaman",luasLahan: "$luasLahan",lokasiLahan: "$lokasiLahan",spesies: "$spesies",tanggal: "$tanggal",status: "$perangkat.status",idOnRaspi:"$perangkat.idOnRaspi"},
                 listResult : {$push: "$perangkat.data"}
                 
             }
@@ -83,6 +83,10 @@ const tanamanRepositories = {
                 _id : "$_id._id",
                 idFarmer: "$_id.idFarmer",
                 namaTanaman: "$_id.namaTanaman",
+                luasLahan: "$_id.luasLahan",
+                lokasiLahan: "$_id.lokasiLahan",
+                spesies: "$_id.spesies",
+                tanggal: "$_id.tanggal",
                 perangkat:{
                   status : "$_id.status",
                   data: "$listResult",
@@ -139,7 +143,7 @@ const tanamanRepositories = {
     var tmpKondisi = Number(kondisi)
     // var tmpKondisi = Constants.ABNORMAL_CONDITION
     if (tmpKelembabanTanah < Constants.SOIL_MOISTURE_LOWER_LIMIT || tmpKelembabanTanah > Constants.SOIL_MOISTURE_UPPER_LIMIT || tmpSuhuUdara < Constants.TEMPERATURE_LOWER_LIMIT || tmpSuhuUdara > Constants.TEMPERATURE_UPPER_LIMIT) {
-    //if (dataCuaca.forecast.forecastday[0].day.totalprecip_mm > 0) {
+    // if (dataCuaca.forecast.forecastday[0].day.totalprecip_mm > 0) {
       /**
        * Abnormal
        */
@@ -150,7 +154,7 @@ const tanamanRepositories = {
        */
       let tanamanInform = await Tanaman.findById(id)
            
-      var registrationToken = "dApGNjvtYws:APA91bF-kHVAHVXQ6EZLMtPU1LgesKtIOuWBOlXhvzjf1uo-NF5U6IVsfFK03FtHshUaN0_41ohu9oJwHjBSCa207zmcxeBRvTpBNBkljj1OpgOWHNrDh9Bb6yoCOY26a-PvgKysAQas";
+      var registrationToken = "ckHGbQF8eW0:APA91bH-vXaXdOduA4X1CPokBZtL8HwU_MYr50CpCwkrBOZ5VpjBcoPT7iO6inqUMIxvC6bTiI7TAf_ZysbwUlsjx9ojl-HrEOIOk3rCwbsSv-GaUqi3CGdV6Fb2OyyxzcHyZDuW5wqp";
       var payload = {
         notification: {
           title: tanamanInform.namaTanaman + " is abnormal !!",
