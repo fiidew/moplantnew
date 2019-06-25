@@ -70,7 +70,7 @@ const tanamanRepositories = {
           // Stage 4
           {
             $group: {
-                _id:{_id : "$_id",idFarmer: "$idFarmer",namaTanaman: "$namaTanaman",luasLahan: "$luasLahan",lokasiLahan: "$lokasiLahan",spesies: "$spesies",tanggal: "$tanggal",status: "$perangkat.status",idOnRaspi:"$perangkat.idOnRaspi"},
+                _id:{_id : "$_id",idFarmer: "$idFarmer",namaTanaman: "$namaTanaman", status: "$perangkat.status",idOnRaspi:"$perangkat.idOnRaspi"},
                 listResult : {$push: "$perangkat.data"}
                 
             }
@@ -83,10 +83,6 @@ const tanamanRepositories = {
                 _id : "$_id._id",
                 idFarmer: "$_id.idFarmer",
                 namaTanaman: "$_id.namaTanaman",
-                luasLahan: "$_id.luasLahan",
-                lokasiLahan: "$_id.lokasiLahan",
-                spesies: "$_id.spesies",
-                tanggal: "$_id.tanggal",
                 perangkat:{
                   status : "$_id.status",
                   data: "$listResult",
@@ -142,8 +138,8 @@ const tanamanRepositories = {
     var tmpSuhuUdara = Number(suhuUdara)
     var tmpKondisi = Number(kondisi)
     // var tmpKondisi = Constants.ABNORMAL_CONDITION
-    //if (tmpKelembabanTanah < Constants.SOIL_MOISTURE_LOWER_LIMIT || tmpKelembabanTanah > Constants.SOIL_MOISTURE_UPPER_LIMIT || tmpSuhuUdara < Constants.TEMPERATURE_LOWER_LIMIT || tmpSuhuUdara > Constants.TEMPERATURE_UPPER_LIMIT) {
-    if (dataCuaca.forecast.forecastday[0].day.totalprecip_mm > 0) {
+    if (tmpKelembabanTanah < Constants.SOIL_MOISTURE_LOWER_LIMIT || tmpKelembabanTanah > Constants.SOIL_MOISTURE_UPPER_LIMIT || tmpSuhuUdara < Constants.TEMPERATURE_LOWER_LIMIT || tmpSuhuUdara > Constants.TEMPERATURE_UPPER_LIMIT) {
+    //if (dataCuaca.forecast.forecastday[0].day.totalprecip_mm > 0) {
       /**
        * Abnormal
        */
