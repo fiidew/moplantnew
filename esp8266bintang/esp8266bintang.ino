@@ -6,17 +6,19 @@
  
 //ESP8266 RX is connected to Arduino Digital Pin 7
 #define ESP8266_RX_PIN 7
-
  
                             // Rx        ,        Tx
 SoftwareSerial WiFi_Serial(ESP8266_TX_PIN,ESP8266_RX_PIN);
-#define WIFI_NAME "RATU Bakery"
-#define WIFI_PASSWORD "ratucake"
+#define WIFI_NAME "@wifi.id lt2"
+#define WIFI_PASSWORD "admin123"
+//#define WIFI_NAME "RATU Bakery"
+//#define WIFI_PASSWORD "ratucake"
 #define port 3000
-#define server "192.168.0.105"
+#define server "192.168.1.101"
+//#define server "192.168.43.26"
 #define apiKey "J9TZ97N7E8I53U2W"
 
-String uri="/api/tanaman/5cfa6320c6426a1aa8430601/updatedata";
+String uri="/api/tanaman/5d12d4c98d6fbb1a08cf1d98/updatedata";
 
 boolean No_IP=false;
 
@@ -52,6 +54,15 @@ float temperature;
 /* Global Variable to access the library functions */
 dht11 DHT11;
 
+//untuk fuzzy 
+float kelembabanTanah[3];
+float suhuUdara[5];
+float rule[3][5];
+float rule00, rule01, rule02, rule03, rule04;
+float rule10, rule11, rule12, rule13, rule14;
+float rule20, rule21, rule22, rule23, rule24;
+float defuz, volume, temp;
+
 
 void setup()
 {
@@ -73,6 +84,9 @@ void loop()
         ph = getPh(phPin);
         humidity = getHumidity(humidityPin);
         temperature = getTemperature(humidityPin);
+        FuzzySuhu();
+        FuzzyKelembabanTanah();
+        getVolume();
         
         // Print the output on the Serial Monitor
         Serial.println("");
@@ -89,6 +103,9 @@ void loop()
 
         Serial.print("Suhu Udara =  ");
         Serial.println(temperature);
+
+         Serial.print("Kondisi =  ");
+        Serial.println(volume);
         Serial.println("******************************");
         Serial.println("");
   
@@ -99,21 +116,16 @@ void postToServer()
 {
       Serial.println("Connecting to Server");
       response="";
-      
       prepareData();
-
       Serial.println("AT+CIPSTART=\"TCP\",\"" + String(server)+"\","+ String(port));    
       WiFi_Serial.println("AT+CIPSTART=\"TCP\",\"" + String(server)+"\","+ String(port));
       delay(5000);
-      
       if(WiFi_Serial.available())
       {
           response="";
-          
           // read the data into a variable as long as the
           while(WiFi_Serial.available())  
             response+= (char)WiFi_Serial.read();
-          
           Serial.println(response);
           if(WiFi_Serial.find("CONNECT"))
             Serial.print("AT+CIPSEND=");
@@ -121,9 +133,9 @@ void postToServer()
 
           WiFi_Serial.print("AT+CIPSEND=");
           WiFi_Serial.println(request_header_1.length() + request_header_2.length() + data.length());
-//          delay(1000);
+          delay(1000);
           //pengiriman setiap 1 menit 
-          delay(60000);
+//          delay(10000);
           
           if(WiFi_Serial.available());
             response="";
@@ -175,9 +187,9 @@ void prepareData()
       data += "\"kelembabanTanah\":\""+String(soilmoisture)+"\",";       // Kelembaban tanah 
       data += "\"ph\":\""+String(ph)+"\",";      // Ph
       data += "\"kelembabanUdara\":\""+String(humidity)+"\",";   // Humidity  
-      data += "\"suhuUdara\":\""+String(temperature)+"\"";   // Temperature   
-//      data += "\"field4\":\""+String(reedStatus)+"\","; // Door Status ( OPEN=1 or CLOSE=0)
-//      data += "\"field5\":\""+String(powerStatus)+"\",";// Power Status ( ON=1 or OFF=0 )
+      data += "\"suhuUdara\":\""+String(temperature)+"\",";   // Temperature   
+      data += "\"kondisi\":\""+String(volume)+"\""; // kebutuhan air
+//      data += "\"status\":\""+String(status)+"\"";// Power Status ( ON=1 or OFF=0 )
 //      data += "\"field6\":\""+String(pirStatus)+"\",";  // Person Status ( YES=1 or NO=0 )    
 //      data += "\"field7\":\""+String(mobile)+"\",";     // Unique ID
 //      data += "\"field8\":\""+String(mobile)+"\"";      // Mobile number
@@ -241,26 +253,13 @@ void check4IP(int t1)
 }
 
 
-
-
 /*********** Analog Read function*********/
 float getSoilmoisture(int soilmoisturePin)
 {    
-        // ananlogRead function converts the input voltage range (0 to 5V), to a digital value between (0 to 1023)
-        // This is done by a circuit inside the microcontroller called an analog-to-digital converter or ADC. 
-        // Read the value from the Analog Pin and store it to an integer variable
         int sensorValue = analogRead(soilmoisturePin);
         //Output dry = 650 =0% ; Output water=250=100%
         int valueMax = 650;
-
-        // To scale the numbers between 0.0 and 5.0, 
-        // divide 5.0 by 1023.0 and multiply that by sensorValue
-        // multiply the result with reference milli volts. (1V = 1000mV)
-//        float milliVoltsTemp = sensorValue*(5.0/1023.0)*1000;
-        float soilMoisture = (valueMax - sensorValue)/3.55;
-
-        // There will be 1°C change for every 10mV of output
-//        return milliVoltsTemp/10;
+        int soilMoisture = (valueMax - sensorValue)/3.55;
         return soilMoisture;
 }
 
@@ -272,7 +271,7 @@ float getHumidity(int humidityPin)
 
 
         // After reading the value which is stored in the library variable
-        return (float)DHT11.humidity;
+        return (int)DHT11.humidity;
 }
 
 
@@ -283,7 +282,7 @@ float getTemperature(int humidityPin)
 
 
         // After reading the value which is stored in the library variable
-        return (float)DHT11.temperature;
+        return (int)DHT11.temperature;
 }
 
 
@@ -298,7 +297,225 @@ float getPh(int phPin)
         // divide 5.0 by 1023.0 and multiply that by sensorValue
         // multiply the result with reference milli volts. (1V = 1000mV)
         float outputValue = (-0.0693*sensorValue)+7.3855;
-
+        if(outputValue<0 || outputValue>10)
+          return outputValue=7;
+        else
         // There will be 1 Lumen change for every 10mV of output
         return outputValue;
+}
+
+
+//fuzzy
+void FuzzySuhu(){
+  //untuk suhu dingin
+  if(temperature <= 10)
+  {
+    suhuUdara[0]=1;
+  }
+  else if(temperature>10 && temperature<=12)
+  {
+    suhuUdara[0]=(12-temperature)/(12-10);
+  }
+  else
+  {
+    suhuUdara[0] = 0; 
+  }
+  
+  //untuk sejuk
+  if(temperature<=10)
+  {
+    suhuUdara[1]=0;
+  }
+  else if(temperature>10 && temperature<=12){
+    suhuUdara[1]=(temperature-10)/(12-10);
+  }
+  else if(temperature>12 && temperature<=17)
+  {
+    suhuUdara[1]=1;
+  }
+  else if(temperature>17 && temperature<=19)
+  {
+    suhuUdara[1]=(19-temperature)/(19-17);
+  }
+  else
+  {
+    suhuUdara[1]=0;
+  }
+  
+  //untuk normal
+  if(temperature<=17)
+  {
+    suhuUdara[2]=0;
+  }
+  else if(temperature>17 && temperature<=19){
+    suhuUdara[2]=(temperature-17)/(19-17);
+  }
+  else if(temperature>19 && temperature<=22)
+  {
+    suhuUdara[2]=1;
+  }
+  else if(temperature>22 && temperature<=24)
+  {
+    suhuUdara[2]=(24-temperature)/(24-22);
+  }
+  else
+  {
+    suhuUdara[2]=0;
+  }
+  
+  //untuk sedang
+  if(temperature<=22)
+  {
+    suhuUdara[3]=0;
+  }
+  else if(temperature>22 && temperature<=24){
+    suhuUdara[3]=(temperature-22)/(24-22);
+  }
+  else if(temperature>24 && temperature<=27)
+  {
+    suhuUdara[3]=0.4;
+  }
+  else if(temperature>27 && temperature<=29)
+  {
+    suhuUdara[3]=(29-temperature)/(29-27);
+  }
+  else
+  {
+    suhuUdara[3]=0;
+  }
+  
+  //untuk panas
+  if(temperature<=27)
+  {
+    suhuUdara[4]=0;
+  }
+  else if(temperature>27 && temperature<=29)
+  {
+    suhuUdara[4]=(temperature-27)/(29-27);
+  }
+  else
+  {
+    suhuUdara[4]=1;
+  }
+}
+
+void FuzzyKelembabanTanah(){
+  //untuk kering
+  if(soilmoisture <= 25)
+  {
+    kelembabanTanah[0]=1;
+  }
+  else if(soilmoisture>25 && soilmoisture<=30)
+  {
+    kelembabanTanah[0]=(30-soilmoisture)/(30-25);
+  }
+  else
+  {
+    kelembabanTanah[0] = 0; 
+  }
+  
+  //untuk lembab
+  if(soilmoisture<=25)
+  {
+    kelembabanTanah[1]=0;
+  }
+  else if(soilmoisture>25 && soilmoisture<=30){
+    kelembabanTanah[1]=(soilmoisture-25)/(30-25);
+  }
+  else if(soilmoisture>30 && soilmoisture<=55)
+  {
+    kelembabanTanah[1]=1;
+  }
+  else if(soilmoisture>55 && soilmoisture<=60)
+  {
+    kelembabanTanah[1]=(60-soilmoisture)/(60-55);
+  }
+  else
+  {
+    kelembabanTanah[1]=0;
+  }
+  
+  //untuk basah
+  if(soilmoisture<=55)
+  {
+    kelembabanTanah[2]=0;
+  }
+  else if(soilmoisture>55 && soilmoisture<=60)
+  {
+    kelembabanTanah[2]=(soilmoisture-55)/(60-55);
+  }
+  else
+  {
+    kelembabanTanah[2]=1;
+  }
+}
+
+void RuleVolume(){
+  
+  int i, j;
+  for(i=0; i<=2;i=i+1)
+  {
+      for(j=0;j<=4;j=j+1)
+      {
+        temp=min(kelembabanTanah[i], suhuUdara[j]);
+        rule[i][j] = temp;
+      }
+  }
+  
+  rule00=rule[0][0];  //(kering,dingin = sangat sedikit)
+  rule01=rule[0][1];  //(kering,sejuk = sedikit)
+  rule02=rule[0][2];  //(kering,normal = agak sedikit)
+  rule03=rule[0][3];  //(kering,sedang = sedang)
+  rule04=rule[0][4];  //(kering,panas = agak banyak)
+  
+  rule10=rule[1][0];  //(lembab,dingin = sedikit)
+  rule11=rule[1][1];  //(lembab,sejuk = agak sedikit)
+  rule12=rule[1][2];  //(lembab,normal = sedang)
+  rule13=rule[1][3];  //(lembab,sedang = agak banyak)
+  rule14=rule[1][4];  //(lembab,panas = banyak)
+  
+  rule20=rule[2][0];  //(basah,dingin = agak sedikit)
+  rule21=rule[2][1];  //(basah,sejuk = sedang)
+  rule22=rule[2][2];  //(basah,normal = agak banyak)
+  rule23=rule[2][3];  //(basah,sedang = banyak)
+  rule24=rule[2][4];  //(basah,panas = sangat banyak)
+  
+}
+
+void getVolume(){
+
+  //metode sugeno
+//  float sangat_sedikit= 200;
+//  float sedikit=300;
+//  float agak_sedikit=500;
+//  float sedang=600;
+//  float agak_banyak=700;
+//  float banyak=900;
+//  float sangat_banyak=1000;
+
+  float sangat_sedikit= 1000;
+  float sedikit=900;
+  float agak_sedikit=700;
+  float sedang=600;
+  float agak_banyak=500;
+  float banyak=300;
+  float sangat_banyak=200;
+
+  RuleVolume();
+  //volume=0;
+  volume=(rule00*sangat_sedikit)+(rule01*sedikit)+(rule02*agak_sedikit)+(rule03*sedang)+(rule04*agak_banyak)+
+       (rule10*sedikit)+(rule11*agak_sedikit)+(rule12*sedang)+(rule13*agak_banyak)+(rule14*banyak)+
+       (rule20*agak_sedikit)+(rule21*sedang)+(rule22*agak_banyak)+(rule23*banyak)+(rule24*sangat_banyak);
+
+  defuz=0;
+  int i ,j;
+  for(i=0;i<=2;i=i+1)
+  {
+    for(j=0;j<=4;j=j+1)
+    {
+      defuz=defuz+rule[i][j];
+    }
+  }
+  volume=volume/defuz;
+//    volume = defuz;
 }

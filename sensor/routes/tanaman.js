@@ -16,4 +16,5 @@ router.post('/data-in-time',passport.authenticate('jwt', { session: false}), tan
 router.get('/tanaman-show-all',passport.authenticate('jwt', { session: false}), tanaman_controller.tanaman_show_all);
 router.get('/requested-tanaman',passport.authenticate('jwt', { session: false}), tanaman_controller.get_requested_tanaman);
 router.get('/:city/getcuaca',passport.authenticate('jwt', { session: false}),tanaman_controller.getWeather);
+router.get('/getnotification',tanaman_controller.getnotification);
 module.exports = router;

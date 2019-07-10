@@ -3,13 +3,35 @@
     <b-row>
       <b-col md="12">
         <b-card header="Monitoring" class="card-accent-success">
+    
+    <b-card width="80px">
+    <b-row>
+      <b-col sm="2" class="text-center">
+      </b-col>
+      <b-col sm="3" class="text-center">
+            <h6><img src="img/plant/plant.png" width="50px" alt="CoreUI Logo"></h6>
+            <b-badge v-bind:variant="conditions">{{CurrentConditions }}</b-badge><br>
+            <label class="mr-sm-2" for=" ">{{VolumeConditions}}  ml</label>
+      </b-col>
+      <b-col sm="2" class="text-left">
+         <label class="mr-sm-2" for=" ">Name Of Plant</label><br>
+         <label class="mr-sm-2" for=" ">Spesies </label><br>
+         <label class="mr-sm-2" for=" ">Location</label><br>
+         <label class="mr-sm-2" for=" ">Large Area</label>
+      </b-col>
+      <b-col sm="3" class="text-left">
+         <label class="mr-sm-2" for=" ">: {{nameOfPlant}}</label><br>
+         <label class="mr-sm-2" for=" ">: {{spesiesOfPlant}}</label><br>
+         <label class="mr-sm-2" for=" ">: {{locationOfPlant}}</label><br>
+         <label class="mr-sm-2" for=" ">: {{largeOfPlant}} m x m </label>
+      </b-col>
+      </b-row>
+    </b-card> 
+
+
     <b-card>
       <b-row>
         <b-col sm="5">
-            <h6>Name Of Plant : {{nameOfPlant}}</h6>
-            <h6>Spesies : {{spesiesOfPlant}}</h6>
-            <h6>Location : {{locationOfPlant}}</h6>
-            <h6>Large Area : {{largeOfPlant}}</h6>
           <!--
           <h4><img src="img/plant/plant.png" width="50px" alt="CoreUI Logo">{{nameOfPlant}}</h4>
           <!-- <h4 id="traffic" class="card-title mb-0">Graph</h4> -->
@@ -17,7 +39,7 @@
           <!-- <b-badge v-bind:variant="conditions">{{CurrentConditions}}</b-badge> -->
           <!-- | <b-badge v-bind:variant="statusDevice">{{statusDeviceInStr}}</b-badge> -->
         </b-col>
-        
+       
         <b-col sm="7">
           <b-form inline class="float-right">
             <label class="mr-sm-2" for="inlineInput1">Start: </label>
@@ -25,14 +47,12 @@
             <label class="mx-sm-2" for="inlineInput2">End: </label>
             <b-input id="inlineInput2" type="date" v-model="endDate"></b-input>
             <b-button v-b-tooltip.hover title="Filter data" type="button" variant="primary" class="float-right" @click="filterData"><i class="icon-magnifier"></i></b-button> 
-              <b-button v-b-tooltip.hover title="Streaming data" type="button" variant="warning" class="float-right" @click="firstLoad"><i class="icon-clock"></i></b-button>
-            <div slot="key-action" slot-scope="data">
-              <b-button variant="primary" size="sm" @click="toDetail(data.item._id)">Show Details</b-button>
-            </div>
+              <b-button v-b-tooltip.hover title="Streaming data" type="button" variant="success" class="float-right" @click="firstLoad"><i class="icon-clock"></i></b-button>
           </b-form> 
         </b-col>
-       
+      
       </b-row>
+      <br>
       <bounce-spinner v-if="isLoading"></bounce-spinner>
       <line-chart v-if="isProcess" :labels="labelsData" :datasoilmoisture="dataChartSoilMoisture" :datahumidity="dataChartHumidity" :datatemperature="dataChartTemperature" :dataph="dataChartPh" :datasoilmoisturelimit="dataChartSoilMoistureLimit" :datahumiditylimit="dataChartHumidityLimit" :datatemperaturelimit="dataChartTemperatureLimit" :dataphlimit="dataChartPhLimit" :soilmoistureupperlimit="dataChartSoilMoistureUpperLimit" :humidityupperlimit="dataChartHumidityUpperLimit" :temperatureupperlimit="dataChartTemperatureUpperLimit" :phupperlimit="dataChartPhUpperLimit" :options="{responsive: true, maintainAspectRatio: false}"></line-chart>
       <div slot="footer">
@@ -73,7 +93,7 @@
            <b-table :hover="hover" :striped="striped" :bordered="bordered" :small="small" :fixed="fixed" responsive="sm" :items="tableItems" :fields="tableFields" :current-page="currentPage" :per-page="perPage">
            
             <div slot="key-kondisi" slot-scope="data">
-              <b-badge :variant="getKondisi(data.item.kondisi)">{{data.item.kondisi == 0 ? "Abnormal":"Normal"}}</b-badge>
+              <b-badge :variant="getKondisi(data.item.kondisi)">{{data.item.kondisi > 0 ? "Need Water":"Normal"}}</b-badge>
             </div>
             
             
@@ -88,6 +108,10 @@
             <div slot="key-suhuUdara" slot-scope="data">
               <strong>{{data.item.suhuUdara.toFixed(2)}}</strong>
               <div class="small text-muted">Celcius</div>
+            </div>
+            <div slot="key-ph" slot-scope="data">
+              <strong>{{data.item.ph.toFixed(2)}}</strong>
+              <div class="small text-muted">  </div>
             </div>
              <div slot="key-tanggal" slot-scope="data">
               <b-badge :variant="dateFormatter(data.item.tanggal)">{{data.item.tanggal | formatDate}}</b-badge>
@@ -207,6 +231,7 @@ export default {
       dateOfPlant:"",
       socket : io('localhost:3000'),
       CurrentConditions:"",
+      VolumeConditions:"",
       dateOnFormat:"",
       currentTemperature:0,
       currentHumidity:0,
@@ -227,6 +252,9 @@ export default {
         },
         { key: 'key-suhuUdara', 
           label: 'Temperature' 
+        },
+        { key: 'key-ph', 
+          label: 'Ph' 
         },
         { key: 'key-tanggal', 
           label: 'Time' 
@@ -287,6 +315,7 @@ export default {
         this.currentSoilMoisture = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kelembabanTanah.toFixed(2);
         this.currentHumidity=tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kelembabanUdara.toFixed(2);
         this.currentPh=tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].ph.toFixed(2);
+        this.VolumeConditions=tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kondisi.toFixed(2);
         this.getBadge(tanamanData.perangkat.status);
         this.getKondisi(tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kondisi);
         this.dateFormatter(tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].tanggal);
@@ -370,6 +399,8 @@ export default {
       this.currentHumidity = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kelembabanUdara.toFixed(2);
       this.currentSoilMoisture = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kelembabanTanah.toFixed(2);
       this.currentPh = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].ph.toFixed(2);
+      this.currentConditions=tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kondisi.toFixed(2);
+      this.VolumeConditions=tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kondisi.toFixed(2);
       this.soket();
     },
     async processDataInTime(){
@@ -402,6 +433,7 @@ export default {
       this.currentHumidity = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kelembabanUdara.toFixed(2);
       this.currentSoilMoisture = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kelembabanTanah.toFixed(2);
       this.currentPh = tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].ph.toFixed(2);
+      this.VolumeConditions=tanamanData.perangkat.data[tanamanData.perangkat.data.length-1].kondisi.toFixed(2);
       for(var i=0;i<tanamanData.perangkat.data.length;i++){
         this.dataChartSoilMoisture.push(tanamanData.perangkat.data[i].kelembabanTanah.toFixed(2));
         this.dataChartHumidity.push(tanamanData.perangkat.data[i].kelembabanUdara.toFixed(2));
@@ -435,14 +467,13 @@ export default {
       
       var kondisiPointer = 0;
       if(Number(tmp) == 0 ){
-        this.CurrentConditions="Need water";
-        this.conditions="danger"
-      }else{
-        kondisiPointer = 1;
         this.CurrentConditions="Normal";
-        this.conditions="primary"
+        this.conditions="success"
+      }else{
+        this.CurrentConditions="Need Water";
+        this.conditions="danger"
       }
-      return kondisiPointer == 0 ? 'danger' : 'success'
+      return kondisiPointer == 0 ? 'success' : 'danger'
     },
     dateFormatter(date){
       var created_date = new Date(date);
@@ -519,4 +550,45 @@ export default {
             </nav> -->
             <!-- </b-row> -->
         </b-card> 
+-->
+
+<!--
+  <b-card>
+            <!-- <b-row>  -->
+              
+            <!-- <b-table striped outlined stacked="sm" hover :items="tableItems" :fields="tableFields" head-variant="light" :current-page="currentPage" :per-page="perPage"> -->
+           <b-table :hover="hover" :striped="striped" :bordered="bordered" :small="small" :fixed="fixed" responsive="sm" :items="tableItems" :fields="tableFields" :current-page="currentPage" :per-page="perPage">
+           
+            <div slot="key-kondisi" slot-scope="data">
+              <b-badge :variant="getKondisi(data.item.kondisi)">{{data.item.kondisi == 0 ? "Abnormal":"Normal"}}</b-badge>
+            </div>
+            
+            
+            <div slot="key-kelembabanTanah" slot-scope="data">
+              <strong>{{data.item.kelembabanTanah.toFixed(2)}}</strong>
+              <div class="small text-muted">%RH</div>
+            </div>
+            <div slot="key-kelembabanUdara" slot-scope="data">
+              <strong>{{data.item.kelembabanUdara.toFixed(2)}}</strong>
+              <div class="small text-muted">%</div>
+            </div>
+            <div slot="key-suhuUdara" slot-scope="data">
+              <strong>{{data.item.suhuUdara.toFixed(2)}}</strong>
+              <div class="small text-muted">Celcius</div>
+            </div>
+             <div slot="key-tanggal" slot-scope="data">
+              <b-badge :variant="dateFormatter(data.item.tanggal)">{{data.item.tanggal | formatDate}}</b-badge>
+              
+            </div>
+            </b-table>
+            <nav>
+                <b-pagination :total-rows="getRowCount(tableItems)" :per-page="perPage" v-model="currentPage" prev-text="Prev" next-text="Next" hide-goto-end-buttons/>
+            </nav>
+            <!-- <nav>
+              <b-pagination size="sm" :total-rows="tableItemsLength" :per-page="10" :limit="5" prev-text="prev" next-text="next" v-model="page"/>
+            </nav> -->
+            <!-- </b-row> -->
+        </b-card> 
+
+
 -->

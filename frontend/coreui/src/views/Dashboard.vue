@@ -11,7 +11,7 @@
               </ul>       
       </b-alert>
     </b-row>
-      <!--ini untuk menampilkan data average-->
+  <!--ini untuk menampilkan data average-->
     <b-row>
       <b-col sm="6" lg="3">
         <b-card no-body class="bg-success">
@@ -49,114 +49,24 @@
           <card-bar-chart-example chartId="card-chart-04" class="chart-wrapper px-3" style="height:70px;" height="70"/>
         </b-card>
       </b-col>
-
-
-      <!--akhir data average-->
-      
+    <!--akhir data average-->  
     </b-row>
 
 
-      <b-row>
-      <b-col md="12">
-        <b-card header="Plant List" class="card-accent-success">
-           <div slot="header">
-              <b>Average Data</b>
-          </div>
-          <b-row>        
-             <b-col sm="12" lg="12">
-              <b-row v-if="existingData == true">
-              <!-- Ini data rata2 dan chart -->
-                <b-col sm="3">
-                  <Callout variant="success">
-                    <b-row>
-                      <b-col sm="12" lg="6">
-                        <small class="text-muted">Soil Moisture</small><br>
-                        <strong class="h4">{{ SoilMoistureAverage }}</strong>
-                      </b-col>
-                      <b-col sm="12" lg="6">
-                    <!-- <div class="chart-wrapper"> -->
-                      <!--<callout-chart-example :data="[35, 23, 56, 22, 97, 23, 64]" variant="#20a8d8" width="80" height="30" />-->
-                        <callout-chart-example chartId="callout-chart-01" :labels="labelsData" :data="SoilMoistureGraph" variant="success" width="80" height="30" />
-                    <!-- </div> -->
-                      </b-col>
-                    </b-row>
-                  </Callout>
-                </b-col>
-                <b-col sm="3">
-                  <Callout variant="danger">
-                    <b-row>
-                      <b-col sm="12" lg="6">
-                        <small class="text-muted">Humidity</small><br>
-                        <strong class="h4">{{HumidityAverage}}</strong>
-                      </b-col>
-                     <b-col sm="12" lg="6">
-                        <!-- <div class="chart-wrapper"> -->
-                        <callout-chart-example chartId="callout-chart-02" :labels="labelsData" :data="HumidityGraph" variant="danger" width="80" height="30" />
-                       <!-- </div> -->
-                      </b-col>
-                    </b-row>
-                  </Callout>
-                </b-col>
-                <b-col sm="3">
-                  <Callout variant="info">
-                    <b-row>
-                      <b-col sm="12" lg="6">
-                        <small class="text-muted">Temperature</small><br>
-                        <strong class="h4">{{ TemperatureAverage }}</strong>
-                      </b-col>
-                      <b-col sm="12" lg="6">
-                    <!-- <div class="chart-wrapper"> -->
-                      <!--<callout-chart-example :data="[35, 23, 56, 22, 97, 23, 64]" variant="#20a8d8" width="80" height="30" />-->
-                        <callout-chart-example chartId="callout-chart-03" :labels="labelsData" :data="TemperatureGraph" variant="info" width="80" height="30" />
-                    <!-- </div> -->
-                      </b-col>
-                    </b-row>
-                  </Callout>
-                </b-col>
-                <b-col sm="3">
-                  <Callout variant="warning">
-                    <b-row>
-                      <b-col sm="12" lg="6">
-                        <small class="text-muted">Ph</small><br>
-                        <strong class="h4">{{ PhAverage }}</strong>
-                      </b-col>
-                      <b-col sm="12" lg="6">
-                    <!-- <div class="chart-wrapper"> -->
-                      <!--<callout-chart-example :data="[35, 23, 56, 22, 97, 23, 64]" variant="#20a8d8" width="80" height="30" />-->
-                        <callout-chart-example chartId="callout-chart-04" :labels="labelsData" :data="PhGraph" variant="warning" width="80" height="30" />
-                    <!-- </div> -->
-                      </b-col>
-                    </b-row>
-                  </Callout>
-                </b-col>
-              <!-- Ini data rata2 dan chart -->  
-              </b-row>
-             </b-col>
-          </b-row> 
-        </b-card>
-      </b-col>
-    </b-row>
-    
-
-
-        <b-row>
+    <b-row>
       <b-col md="12">
         <b-card header="Plant List" class="card-accent-success">
            <div slot="header">
               <b>Plant List</b>
               <div class="card-header-actions">
-                <b-button type="button" variant="success" @click="showModal" class="mr-1">Register Plant</b-button>
-             
+                <b-button type="button" variant="success" @click="showModal" class="mr-1">Add Plant</b-button>
               </div>
-          </div>
-          <b-row>        
-             
-          </b-row>
+            </div>
           <b-row>
             <b-table striped outlined stacked="sm" hover :items="tableItems" :fields="tableFields" head-variant="light"  v-if="existingData == true">
             <div slot="namaTanaman" slot-scope="data">
               <img src="img/plant/plant.png" width="50px" alt="plants logo">
-              <strong>{{data.value}}</strong>
+              <strong>{{data.item.namaTanaman}}</strong>
               <b-link class="card-header-action btn-minimize" v-b-toggle.collapse1>
                   <i v-bind:id="data.item._id" class="icon-eye"></i>
               </b-link>
@@ -164,18 +74,15 @@
                 <strong>{{data.item._id}}</strong> 
                 <h5><b-badge variant="secondary">{{data.item.perangkat.idOnRaspi}}</b-badge></h5>
               </b-popover>
-              <!-- <div class="small text-muted">{{data.item._id}}</div> -->
             </div>
             <div slot="key-kondisi" slot-scope="data">
-              <b-badge :variant="getKondisi(data.item.perangkat.data[data.item.perangkat.data.length-1].kondisi)">{{data.item.perangkat.data[data.item.perangkat.data.length-1].kondisi > 300 ? "Need Water":"Normal"}}</b-badge><br>
+              <b-badge :variant="getKondisi(data.item.perangkat.data[data.item.perangkat.data.length-1].kondisi)">{{data.item.perangkat.data[data.item.perangkat.data.length-1].kondisi > 0? "Need Water":"Normal"}}</b-badge><br>
               <strong>{{data.item.perangkat.data[data.item.perangkat.data.length-1].kondisi.toFixed(2)}}ml</strong>
             </div>
             <div slot="key-tanggal" slot-scope="data">
               <b-badge :variant="dateFormatter(data.item.perangkat.data[data.item.perangkat.data.length-1].tanggal)">{{data.item.perangkat.data[data.item.perangkat.data.length-1].tanggal | formatDate}}</b-badge>
-              
             </div>
             <div slot="key-kelembabanTanah" slot-scope="data">
-              
               <strong>{{data.item.perangkat.data[data.item.perangkat.data.length-1].kelembabanTanah.toFixed(2)}}</strong>
               <div class="small text-muted">% RH</div>
             </div>
@@ -187,9 +94,6 @@
               <strong>{{data.item.perangkat.data[data.item.perangkat.data.length-1].suhuUdara.toFixed(2)}}</strong>
               <div class="small text-muted">Celcius</div>
             </div>
-            <!--
-            ini mencobaaaaaaaaaaaaaaaaa
-            -->
 
             <div slot="key-ph" slot-scope="data">
               <strong>{{data.item.perangkat.data[data.item.perangkat.data.length-1].ph.toFixed(2)}}</strong>
@@ -201,14 +105,14 @@
             </div>
 
              <div slot="key-action-ya" slot-scope="data">
-              <b-button variant="primary" size="sm" @click="toDetailCuaca(data.item.lokasiLahan)">Detail Cuaca</b-button>
+              <b-button variant="primary" size="sm" @click="toDetailCuaca(data.item.lokasiLahan)">Weather Forecast</b-button>
             </div>
             
           </b-table> 
             
           </b-row> 
             <b-alert v-if="existingData == false" show variant="warning">
-              You don't have a plant in our system, let's manage your first plant by clicking the register plant button.
+              You don't have a plant in our system, let's manage your first plant by clicking the add plant button.
             </b-alert>
         </b-card>
       </b-col>
@@ -228,8 +132,8 @@
           </b-alert>
         <b-form-group>
           <b-form-input type="text" id="name" v-model="plantName" placeholder="Enter your plant ID or name"></b-form-input><br>
-          <b-form-input type="text" id="large" v-model="plantLarge" placeholder="Enter your plant Large Area"></b-form-input><br>
-          <b-form-input type="text" id="location" v-model="plantLocation" placeholder="Enter your plant Location"></b-form-input><br>
+          <b-form-input type="text" id="large" v-model="plantLarge" placeholder="Enter your plant large area m x m"></b-form-input><br>
+          <b-form-input type="text" id="location" v-model="plantLocation" placeholder="Enter your plant city location  "></b-form-input><br>
           <b-form-select v-model="plantSpesies" :options="options"></b-form-select>
           <!--
           <b-form-select id="basicSelect"
@@ -326,15 +230,16 @@ export default {
       successAlert: [],
       options: [
           { value: null, text: 'Please select an option' },
-          { value: 'sawi', text: 'Sawi' },
-          { value: 'kangkung', text: 'kangkung' },
-          { value: 'bayam', text: 'bayam' }
+          { value: 'Sawi', text: 'Sawi' },
+          { value: 'Kangkung', text: 'Kangkung' },
+          { value: 'Bayam', text: 'Bayam' },
+          { value: 'Cabai', text: 'Cabai' },
+          { value: 'Terong', text: 'Terong' }
         ],
       tableFields: [
         {
           key:'namaTanaman',
-          label: 'Plant ID'
-          
+          label: 'Plant ID'   
         },
         {
           key:'key-kondisi',
@@ -344,7 +249,7 @@ export default {
           label: 'Time' 
         },
         { key: 'key-kelembabanTanah', 
-          label: 'SoilMoisture' 
+          label: 'Soil Moisture' 
         },
         { key: 'key-kelembabanUdara', 
           label: 'Humidity' 
@@ -361,7 +266,7 @@ export default {
         },
         {
           key: 'key-action-ya',
-          label: 'DetailsCuaca'
+          label: 'Weather Forecast'
         }
       ]
     }
@@ -402,7 +307,6 @@ export default {
        * this function for action when register plant button on clik
        */
       if(this.plantName && this.plantLarge && this.plantLocation && this.plantSpesies && this.plantDate){
-        
         this.postCreatePlantData()
       }
       this.errors = []
@@ -516,22 +420,8 @@ export default {
       // console.log(this.tableItems);
     },
     
-    getBadge (status) {
-      var varian_='danger'
-      if(status==0){
-        this.statusDeviceInStr="Nonactive";
-      }else if(status==1){
-        this.statusDeviceInStr="Active";
-        varian_='success'
-      }else{
-        this.statusDeviceInStr="Pending"
-        varian_='secondary'
-      }
-      // return status == 0 ? 'danger' : 'success'
-      return varian_
-    },
     getKondisi(tmp){
-      return tmp > 300 ? 'danger' : 'success'
+      return tmp > 0 ? 'danger' : 'success'
     },
     dateFormatter(date){
       var created_date = new Date(date);
@@ -577,172 +467,3 @@ export default {
     height: 50px !important; */
   }
 </style>
-
-<!--
-<b-row>
-      <b-col md="12">
-        <b-card header="Plant List" class="card-accent-warning">
-           <div slot="header">
-              <b>Plant List</b>
-          </div>
-          <b-row>        
-             <b-col sm="12" lg="12">
-              <b-row v-if="existingData == true">
-                <b-col sm="4">
-                  <Callout variant="info">
-                    <b-row>
-                      <b-col sm="12" lg="6">
-                        <small class="text-muted">Soil Moisture Average</small><br>
-                        <strong class="h4">{{ SoilMoistureAverage }}</strong>
-                      </b-col>
-                      <b-col sm="12" lg="6">
-                    <!-- <div class="chart-wrapper"> -->
-                      <!--<callout-chart-example :data="[35, 23, 56, 22, 97, 23, 64]" variant="#20a8d8" width="80" height="30" />-->
-                        <callout-chart-example chartId="callout-chart-01" :labels="labelsData" :data="SoilMoistureGraph" variant="info" width="80" height="30" />
-                    <!-- </div> -->
-                      </b-col>
-                    </b-row>
-                  </Callout>
-                </b-col>
-                <b-col sm="4">
-                  <Callout variant="danger">
-                    <b-row>
-                      <b-col sm="12" lg="6">
-                        <small class="text-muted">Humidity Average</small><br>
-                        <strong class="h4">{{HumidityAverage}}</strong>
-                      </b-col>
-                     <b-col sm="12" lg="6">
-                        <!-- <div class="chart-wrapper"> -->
-                        <callout-chart-example chartId="callout-chart-02" :labels="labelsData" :data="HumidityGraph" variant="danger" width="80" height="30" />
-                       <!-- </div> -->
-                      </b-col>
-                    </b-row>
-                  </Callout>
-                </b-col>
-                <b-col sm="4">
-                  <Callout variant="info">
-                    <b-row>
-                      <b-col sm="12" lg="6">
-                        <small class="text-muted">Temperature Average</small><br>
-                        <strong class="h4">{{ TemperatureAverage }}</strong>
-                      </b-col>
-                      <b-col sm="12" lg="6">
-                    <!-- <div class="chart-wrapper"> -->
-                      <!--<callout-chart-example :data="[35, 23, 56, 22, 97, 23, 64]" variant="#20a8d8" width="80" height="30" />-->
-                        <callout-chart-example chartId="callout-chart-01" :labels="labelsData" :data="TemperatureGraph" variant="info" width="80" height="30" />
-                    <!-- </div> -->
-                      </b-col>
-                    </b-row>
-                  </Callout>
-                </b-col>
-              </b-row>
-             </b-col>
-          </b-row> 
-        </b-card>
-      </b-col>
-    </b-row>
-    <b-row>
-      <b-col md="12">
-        <b-card header="Plant List" class="card-accent-warning">
-           <div slot="header">
-              <b>Plant List</b>
-              <div class="card-header-actions">
-                <b-button type="button" variant="warning" @click="showModal" class="mr-1">Register Plant</b-button>
-             
-              </div>
-          </div>
-          <b-row>        
-             
-          </b-row>
-          <b-row>
-            <b-table striped outlined stacked="sm" hover :items="tableItems" :fields="tableFields" head-variant="light"  v-if="existingData == true">
-            <div slot="namaTanaman" slot-scope="data">
-              <img src="img/plant/plant.png" width="50px" alt="plants logo">
-              <strong>{{data.value}}</strong>
-              <b-link class="card-header-action btn-minimize" v-b-toggle.collapse1>
-                  <i v-bind:id="data.item._id" class="icon-eye"></i>
-              </b-link>
-              <b-popover v-bind:target="data.item._id" title="Plant ID">
-                <strong>{{data.item._id}}</strong> 
-                <h5><b-badge variant="secondary">{{data.item.perangkat.idOnRaspi}}</b-badge></h5>
-              </b-popover>
-              <!-- <div class="small text-muted">{{data.item._id}}</div> -->
-            </div>
-            <div slot="key-kondisi" slot-scope="data">
-              <b-badge :variant="getKondisi(data.item.perangkat.data[data.item.perangkat.data.length-1].kondisi)">{{data.item.perangkat.data[data.item.perangkat.data.length-1].kondisi == 0 ? "Abnormal":"Normal"}}</b-badge>
-            </div>
-            <div slot="key-tanggal" slot-scope="data">
-              <b-badge :variant="dateFormatter(data.item.perangkat.data[data.item.perangkat.data.length-1].tanggal)">{{data.item.perangkat.data[data.item.perangkat.data.length-1].tanggal | formatDate}}</b-badge>
-              
-            </div>
-            <div slot="key-kelembabanTanah" slot-scope="data">
-              
-              <strong>{{data.item.perangkat.data[data.item.perangkat.data.length-1].kelembabanTanah.toFixed(2)}}</strong>
-              <div class="small text-muted">% RH</div>
-            </div>
-            <div slot="key-kelembabanUdara" slot-scope="data">
-              <strong>{{data.item.perangkat.data[data.item.perangkat.data.length-1].kelembabanUdara.toFixed(2)}}</strong>
-              <div class="small text-muted">% RH</div>
-            </div>
-            <div slot="key-suhuUdara" slot-scope="data">
-              <strong>{{data.item.perangkat.data[data.item.perangkat.data.length-1].suhuUdara.toFixed(2)}}</strong>
-              <div class="small text-muted">Celcius</div>
-            </div>
-            <div slot="key-status" slot-scope="data">
-              <b-badge :variant="getBadge(data.item.perangkat.status)">{{ data.item.perangkat.status == 0 ? "Nonactive": data.item.perangkat.status == 1 ? "Active":"Pending" }}</b-badge>
-            </div>
-            <div slot="key-action" slot-scope="data">
-              <b-button variant="primary" size="sm" @click="toDetail(data.item._id)">Show Details</b-button>
-            </div>
-            
-          </b-table> 
-            
-          </b-row> 
-            <b-alert v-if="existingData == false" show variant="warning">
-              You don't have a plant in our system, let's manage your first plant by clicking the register plant button.
-            </b-alert>
-        </b-card>
-      </b-col>
-    </b-row>
-    
-    <b-modal variant="warning" class="modal-warning"  ref="myModalRef" hide-footer title="Register">
-      <div class="d-block text-center">
-        <b-alert show variant="danger" v-if="errors.length > 0">
-              <h4 class="alert-heading">Error !</h4>
-              <ul>
-                <li v-for="item in errors" :key="item">{{ item }}</li>
-              </ul>
-              <hr>
-              <p class="mb-0">
-               Please check again your form field.
-              </p>
-          </b-alert>
-        <b-form-group>
-          <b-form-input type="text" id="name" v-model="plantName" placeholder="Enter your plant ID or name"></b-form-input>
-        </b-form-group>
-      </div>
-      <b-btn class="mt-3" variant="outline-warning" block @click="createPlant">Register</b-btn>
-    </b-modal>
-
--->
-
-<!--
-      <b-col sm="6" lg="6">
-        <b-card  bg-variant="info" text-variant="white">
-          <h1 class="card-text">
-            {{DeviceActive}} 
-          </h1>
-          <p>Active Device</p>
-        </b-card>
-       
-      </b-col>
-      <b-col sm="6" lg="6">
-        <b-card  bg-variant="danger" text-variant="white">
-          <h1 class="card-text">
-            {{DeviceNonActive}}
-          </h1>
-          <p>Nonactive Device</p>
-        </b-card>
-
-      </b-col>
-      -->

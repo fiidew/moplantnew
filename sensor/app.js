@@ -10,9 +10,6 @@ var passport = require('passport');
 var config = require('./config/database');
 var cors = require('cors')
 
-
-
-
 mongoose.connect(config.database, {
   useNewUrlParser: true}).then(
     () => {console.log('MongoDB Connect') },
@@ -23,6 +20,7 @@ var api = require('./routes/api');
 var tanaman = require('./routes/tanaman');
 var perangkat = require('./routes/perangkat');
 var cuaca = require('./routes/cuaca');
+var notification = require('./routes/notification');
 var app = express();
 // var server = app.listen(3000);
 // var io = require('socket.io').listen(server);
@@ -62,6 +60,7 @@ app.use('/api/user', api);
 app.use('/api/tanaman', tanaman);
 app.use('/api/perangkat', perangkat);
 app.use('/api/cuaca', cuaca)
+app.use('/api/notification', notification)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

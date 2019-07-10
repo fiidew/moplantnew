@@ -5,7 +5,7 @@
       <b-card-group class="mb-4">
         <b-card>
           <div class="h1 text-muted text-right mb-4">
-            <i class="icon-people"></i>
+             <img src="img/avatars/gardener.png" width="50px" alt="Gardener Image">
           </div>
           <div class="h4 mb-0">{{farmerRegistered}}</div>
           <small class="text-muted text-uppercase font-weight-bold">Farmers Registered</small>
@@ -13,40 +13,16 @@
         </b-card>
         <b-card>
           <div class="h1 text-muted text-right mb-4">
-            <i class="icon-people"></i>
+            <img src="img/avatars/plant.png" width="50px" alt="Plant Image">
           </div>
           <div class="h4 mb-0">{{tanamanRegistered}}</div>
           <small class="text-muted text-uppercase font-weight-bold">Plants Registered</small>
           <b-progress height="{}" class="progress-xs mt-3 mb-0" variant="success" :value="tanamanRegistered"/>
         </b-card>
-        <b-card>
-          <div class="h1 text-muted text-right mb-4">
-            <i class="icon-feed"></i>
-          </div>
-          <div class="h4 mb-0">{{deviceOnline}}</div>
-          <small class="text-muted text-uppercase font-weight-bold">Device Online</small>
-          <b-progress height="{}" class="progress-xs mt-3 mb-0" variant="warning" :value="deviceOnline"/>
-        </b-card>
-        <b-card>
-          <div class="h1 text-muted text-right mb-4">
-            <i class="icon-ghost"></i>
-          </div>
-          <div class="h4 mb-0">{{deviceOffline}}</div>
-          <small class="text-muted text-uppercase font-weight-bold">Device Offline</small>
-          <b-progress height="{}" class="progress-xs mt-3 mb-0" :value="deviceOffline"/>
-        </b-card>
-        <b-card>
-          <div class="h1 text-muted text-right mb-4">
-            <i class="icon-clock"></i>
-          </div>
-          <div class="h4 mb-0">{{devicePending}}</div>
-          <small class="text-muted text-uppercase font-weight-bold">Device Pending</small>
-          <b-progress height="{}" class="progress-xs mt-3 mb-0" variant="danger" :value="devicePending"/>
-        </b-card>
       </b-card-group>
     <b-row>
       <b-col md="12">
-        <b-card header="Farmers List" class="card-accent-warning">
+        <b-card header="Farmers List" class="card-accent-success">
           <b-table
             class="mb-0 table-outline"
             striped
@@ -57,7 +33,6 @@
             head-variant="light"
           >
             <div slot="key-nama" slot-scope="data">
-              <img src="img/avatars/breder.jpg" width="50px" alt="farmers logo">
               <strong> {{data.item.farmer_docs[0].nama}}</strong>
             </div>
             <div slot="key-alamat" slot-scope="data">
@@ -66,7 +41,7 @@
             </div>
             <div slot="key-telphone" slot-scope="data">
              
-             <h5><b-badge variant="warning">{{data.item.farmer_docs[0].telp}}</b-badge></h5>
+             <h5><b-badge variant="success">{{data.item.farmer_docs[0].telp}}</b-badge></h5>
             
             </div>
           </b-table>

@@ -22,7 +22,7 @@
                 <b-form>
                  <!-- <p style="text-align:center;"><img src="img/brand/logo.png" width="150" height="55" alt="CoreUI Logo"><p> -->
                   <h1 style="text-align:center;">Login</h1>
-                  <p class="text-muted">Login with yout account</p>
+                  <p class="text-muted">Login with your account</p>
                   <b-input-group class="mb-3">
                     <b-input-group-prepend><b-input-group-text><i class="icon-user"></i></b-input-group-text></b-input-group-prepend>
                     <b-form-input type="text" class="form-control" placeholder="Username" autocomplete="username email" v-model="username" />

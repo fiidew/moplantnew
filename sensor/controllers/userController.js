@@ -48,7 +48,7 @@ module.exports = {
   signin: async(req,res)=>{
     let response = new Response()
     try{
-      let result = await userRepositories.signin(req.body.username, req.body.password)
+      let result = await userRepositories.signin(req.body.username, req.body.password, req.body.fcmtoken)
       if(result){
         response.setData(result)
       }else{
@@ -83,7 +83,7 @@ module.exports = {
     let token = Token.authorizationToken(req.headers)
     if(token){
       try{
-        response.setData(await userRepositories.userUpdate(req.params.id))
+        response.setData(await userRepositories.userUpdate(req.params.id,req.body))
       }catch(e){
         response.setStatus(false)
         response.setMessage(e)
@@ -111,6 +111,24 @@ module.exports = {
     }
   },
   
+  usertoken: async(req,res)=>{
+    let response = new Response()
+    let token = Token.authorizationToken(req.headers)
+    if(token){
+      let result_decode = jwt.verify(token, config.secret)
+      try{
+        response.setData(await userRepositories.getProfileUser(result_decode._doc._id))
+      }catch(e){
+        response.setStatus(false)
+        response.setMessage(e)
+      }
+      res.json(response)
+    }else{
+      res.json(response.unAuthorized())
+    }
+  },
+  
+
   all_farmer: async(req,res)=>{
     let response = new Response()
     let token = Token.authorizationToken(req.headers)

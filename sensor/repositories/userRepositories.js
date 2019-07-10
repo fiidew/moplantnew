@@ -40,7 +40,7 @@ const userRepositories = {
         }
     },
     
-    signin: async(username,password)=>{
+    signin: async(username,password, fcmtoken)=>{
         let user = await User.findOne({
             username: username
         })
@@ -52,8 +52,10 @@ const userRepositories = {
                     username: user.username,
                     password: user.password,
                     role: user.role,
-                    token: 'JWT ' + token
+                    token: 'JWT ' + token,
+                    fcmtoken:user.fcmtoken,
                 }
+
                 return newUserObj
             }else{
                 return false
@@ -62,7 +64,8 @@ const userRepositories = {
             return false
         }
     },
-    
+
+
     userDelete: async(id)=>{
         let result = await User.findByIdAndRemove(id)
         return result
@@ -72,8 +75,36 @@ const userRepositories = {
         let result = await User.findByIdAndUpdate(id,{
             $set:body
         })
-        return result
+
+        let userObj={
+            _id: result._id,
+            username: result.username,
+            password: result.password,
+            role: result.role,
+            fcmtoken:result.fcmtoken,
+
+        }
+        return userObj
     },
+
+    getProfileUser:async(id)=>{
+        let result = await User.findOne({
+            _id:id
+        })
+
+        let userObj={
+            _id: result._id,
+            username: result.username,
+            password: result.password,
+            role: result.role,
+            fcmtoken:result.fcmtoken,
+
+        }
+        return userObj
+    },
+
+
+
     profile:async(idUser)=>{
         let result = await Farmer.findOne({
             idUser:idUser

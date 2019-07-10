@@ -9,18 +9,13 @@ const Dashboard = () => import('@/views/Dashboard')
 const Details = () => import('@/views/Details')
 const DetailsCuaca = () => import('@/views/WeatherForecast')
 const Admin = () => import('@/views/admin/Admin')
-const RequestedCows = () => import('@/views/admin/RequestedCows')
-const Label = () => import('@/views/admin/Label')
-const Attributes = () => import('@/views/admin/Attributes')
-const Training = () => import('@/views/admin/Training')
+const RequestedPlant = () => import('@/views/admin/RequestedPlant')
 
 
 const Colors = () => import('@/views/theme/Colors')
 const Typography = () => import('@/views/theme/Typography')
 const Diagnose = () => import('@/views/expert/Diagnose')
 const History = () => import('@/views/expert/History')
-const ListPlant = () => import('@/views/ListPlant')
-const WeatherForecast = () => import('@/views/WeatherForecast')
 const Notification = () => import('@/views/Notifications')
 const HistoryMonitoring = () => import('@/views/HistoryMonitoring')
 
@@ -98,7 +93,7 @@ export default new Router({
           component: Details
         },
         {
-          path: '/:id/detailscuaca',
+          path: '/:city/detailscuaca',
           name : 'DetailsCuaca',
           component: DetailsCuaca
         },
@@ -118,39 +113,14 @@ export default new Router({
           component: Admin
         },
         {
-          path: '/admin/requested-cows',
-          name : 'RequestedCows',
-          component: RequestedCows
-        },
-        {
-          path: '/admin/label',
-          name : 'Label',
-          component: Label
-        },
-        {
-          path: '/admin/attributes',
-          name : 'Attributes',
-          component: Attributes
-        },
-        {
-          path: '/admin/training',
-          name : 'Training',
-          component: Training
+          path: '/admin/requested-plant',
+          name : 'Requested Plant',
+          component: RequestedPlant
         },
         {
           path: '/expert-system/history',
           name : 'History',
           component: History
-        },
-        {
-          path: '/ListPlant',
-          name : 'ListPlant',
-          component: ListPlant
-        },
-        {
-          path: '/WeatherForecast',
-          name : 'WeatherForecast',
-          component: WeatherForecast
         },
         {
           path: '/Notification',

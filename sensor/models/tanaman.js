@@ -20,6 +20,9 @@ var TanamanSchema = new Schema({
   idFarmer: {
     type: Schema.Types.ObjectId,
   },
+  idUser: {
+    type: Schema.Types.ObjectId,
+  },
   namaTanaman: {
     type: String,
     required: true

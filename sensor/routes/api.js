@@ -4,6 +4,7 @@ var jwt = require('jsonwebtoken');
 var express = require('express');
 var router = express.Router();
 const user_controller = require('../controllers/userController');
+const notification_controller = require('../controllers/notificationController');
 var VerifyToken = require('../config/VerifyToken');
 
 router.post('/farmersignup', user_controller.farmer_signup);
@@ -15,6 +16,7 @@ router.get('/me',passport.authenticate('jwt', { session: false}),user_controller
 router.delete('/:id/delete',passport.authenticate('jwt', { session: false}), user_controller.user_delete);
 router.put('/:id/update',passport.authenticate('jwt', { session: false}),user_controller.user_update);
 router.get('/alluser',passport.authenticate('jwt', { session: false}),user_controller.all_farmer);
+// router.post('/storeToken',passport.authenticate('jwt', { session: false}),user_controller.all_farme);
 // router.post('/book', passport.authenticate('jwt', { session: false}),user_controller.book_post);
 // router.get('/book', passport.authenticate('jwt', { session: false}), user_controller.book_get);
 

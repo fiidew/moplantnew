@@ -24,12 +24,28 @@ module.exports = {
   //     }
   // },
   getWeather: async(req, res)=>{ 
+    
+    let response = new Response()
+    try{
+      // response.setData(await tananmanRepositories.streamUpdateData(req.body.kelembaban,req.body.ph,req.body.status,req.params.id))
+      response.setData(await tanamanRepositories.getWeather(req.params.city))
+    }catch(e){
+      response.setStatus(false)
+      response.setMessage(e)
+    }
+    res.json(response) 
+    // return "sdsd"
+    
+
+  },
+
+  getnotification: async(req, res)=>{ 
     let token = Token.authorizationToken(req.headers);
     if(token){
     let response = new Response()
     try{
       // response.setData(await tananmanRepositories.streamUpdateData(req.body.kelembaban,req.body.ph,req.body.status,req.params.id))
-      response.setData(await tanamanRepositories.getWeather(req.params.city))
+      response.setData(await tanamanRepositories.getnotification())
     }catch(e){
       response.setStatus(false)
       response.setMessage(e)

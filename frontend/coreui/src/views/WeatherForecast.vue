@@ -7,9 +7,9 @@
               <b>Weather Forecast</b>
         </div>
 
-    <b-card> 
+        <b-card> 
           <center>
-          <h4><img src="img/plant/location.png" width="40px" alt="CoreUI Logo">{{locationOfPlant}}-{{regionOfPlant}}-{{countryOfPlant}}</h4>
+          <h4><img src="img/plant/loc.png" width="40px" alt="CoreUI Logo">{{locationOfPlant}}-{{regionOfPlant}}-{{countryOfPlant}}</h4>
           <h6>Last Updated : {{lastUpdateWeather}}</h6>
           <br>
           <img v-bind:src="imageWeather" width="100px" hight="100px"/><br>
@@ -18,21 +18,33 @@
           <br>
           <br>
           <b-row>
-            <b-col md="" right>
+            <b-col sm="2" right>
             </b-col>
-            <b-col md="" right>
-              <h5>Temperature : {{temperatureOfWeather}} c</h5>
-              <h5>Humidity    : {{humidityOfWeather}} %</h5>
-              <h5>Pressure    : {{pressureOfWeather}} mBar</h5>
-              <h5>Visibility  : {{visibilityOfWeather}} Km</h5>
+            <b-col sm="2" right>
+              <h5>Temperature </h5>
+              <h5>Humidity    </h5>
+              <h5>Pressure    </h5>
+              <h5>Visibility  </h5>
             </b-col>
-            <b-col md="" right>
-              <h5>Feel like : {{feelLikeOfWeather}} c</h5>
-              <h5>Wind      : {{windOfWeather}} km/h</h5>
-              <h5>Uv        : {{uvOfWeather}} </h5>
-              <h5>Gust      : {{gustOfWeather}} mph</h5>
+            <b-col sm="2" right>
+              <h5>: {{temperatureOfWeather}} c</h5>
+              <h5>: {{humidityOfWeather}} %</h5>
+              <h5>: {{pressureOfWeather}} mBar</h5>
+              <h5>: {{visibilityOfWeather}} Km</h5>
             </b-col>
-            <b-col md="">
+            <b-col sm="2" right>
+              <h5>Feel like </h5>
+              <h5>Wind      </h5>
+              <h5>Uv        </h5>
+              <h5>Gust      </h5>
+            </b-col>
+            <b-col sm="2" right>
+              <h5>: {{feelLikeOfWeather}} c</h5>
+              <h5>: {{windOfWeather}} km/h</h5>
+              <h5>: {{uvOfWeather}} </h5>
+              <h5>: {{gustOfWeather}} mph</h5>
+            </b-col>
+            <b-col sm="2">
             </b-col>
           </b-row>
         
@@ -44,19 +56,19 @@
           <b-col class="mb-sm-6 mb-0">
             <div class="text-muted">Total Precipitation (mm)</div>
             <strong>{{precOfWeather}}</strong>
-              <b-progress height={} class="progress-xs mt-2" :precision="1" variant="secondary" v-bind:value="100"></b-progress>
+              <b-progress height={} class="progress-xs mt-2" :precision="1" variant="success" v-bind:value="100"></b-progress>
           </b-col>
 
           <b-col class="mb-sm-6 mb-0">
             <div class="text-muted">Sunrise</div>
             <strong>{{sunriseOfWeather}}</strong>
-             <b-progress height={} class="progress-xs mt-2" :precision="1" variant="secondary" v-bind:value="100"></b-progress>
+             <b-progress height={} class="progress-xs mt-2" :precision="1" variant="warning" v-bind:value="100"></b-progress>
           </b-col>
           
           <b-col class="mb-sm-6 mb-0">
             <div class="text-muted">Sunset</div>
             <strong>{{sunsetOfWeather}}</strong>
-             <b-progress height={} class="progress-xs mt-2" :precision="1" variant="secondary" v-bind:value="100"></b-progress>
+             <b-progress height={} class="progress-xs mt-2" :precision="1" variant="info" v-bind:value="100"></b-progress>
           </b-col>
         </b-row>
       </div>
@@ -139,21 +151,6 @@ export default {
       perPage: 5,
       totalRows: 0,
       page:1,
-      tableItemsLength:0,
-      dataChartSoilMoisture: [],
-      dataChartHumidity: [],
-      dataChartTemperature: [],
-      dataChartSoilMoistureLimit:[],
-      dataChartSoilMoistureUpperLimit:[],
-      dataChartHumidityLimit:[],
-      dataChartHumidityUpperLimit:[],
-      dataChartTemperatureLimit:[],
-      dataChartTemperatureUpperLimit:[],
-      labelsData:[],
-      statusDeviceInStr:"",
-      statusDevice:"",
-      conditions:"",
-      test: [4, 4, 4, 4, 4, 4],
       nameOfPlant:"",
       nameOfPlant2:"",
       imageWeather:"",
@@ -174,27 +171,12 @@ export default {
       sunsetOfWeather:"",
       temperatureOfWeather:"",
       visibilityOfWeather:"",
-      socket : io('localhost:3000'),
-      CurrentConditions:"",
-      dateOnFormat:"",
-      currentTemperature:0,
-      currentHumidity:0,
-      currentSoilMoisture:0,
-      tableItems: [],
-      startDate:"",
-      endDate:""
     }
   },
   created(){
       this.checkSession(); 
   },
   methods: {
-     getRowCount (items) {
-      return items.length
-    },
-    filterData: function(){
-      this.processDataInTime()
-    },
     checkSession(){
       /**
        * check session and do action
@@ -215,32 +197,7 @@ export default {
       const response = await PostsService.getCuacaDetail(window.localStorage.getItem("token"),this.$route.params.city);
       return response.data;
     },
-    async fetchDataToday(){
-      const response = await PostsService.getDataToday(window.localStorage.getItem("token"),{
-                          idTanaman: this.$route.params.id
-                        });
-      return response.data;
-    },
-    async fetchDataInTime(){
-      const response = await PostsService.getDataInTime(window.localStorage.getItem("token"),{
-                          idTanaman: this.$route.params.id,
-                          start : this.startDate,
-                          end: this.endDate
-                        });
-      return response.data;
-    },
     async firstLoad(){
-      this.dataChartSoilMoisture= []
-      this.dataChartHumidity= []
-      this.dataChartTemperature=[]
-      this.dataChartSoilMoistureLimit=[]
-      this.dataChartSoilMoistureUpperLimit=[]
-      this.dataChartHumidityLimit=[]
-      this.dataChartHumidityUpperLimit=[]
-      this.dataChartTemperatureLimit=[]
-      this.dataChartTemperatureUpperLimit=[]
-      this.labelsData=[]
-      this.tableItems=[]
       const response = await this.fetchDataCuaca();
       let cuacaData = response.data;
       // console.log(this.selected)
@@ -278,10 +235,6 @@ export default {
       this.dateOnFormat = time;
       return 'secondary';
     },
-    toDetail (id){
-       this.$router.push({ name: 'HistoryMonitoring', params: {id : id} })
-      console.log(id);
-    }
   } 
 }
 </script>
