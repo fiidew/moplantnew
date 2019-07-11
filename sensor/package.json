@@ -15,6 +15,7 @@
     "express": "~4.16.1",
     "express-session": "^1.16.1",
     "fcm-node": "^1.5.1",
+    "fcm-notification": "^2.0.0",
     "firebase-admin": "^7.1.0",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",

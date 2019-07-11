@@ -17,7 +17,10 @@ const notificationRepositories = {
         });
         let saveNotification = await newNotification.save()
         if (saveNotification) {
+            console.log("update notification")
             return saveNotification
+        }else{
+            console.log("fail to update notification")
         }
     },
     updateStatus: async (id, status) => {

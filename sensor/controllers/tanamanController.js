@@ -8,21 +8,6 @@ var Token = require('../services/TokenAuthentication');
 var Response = require('../services/Response');
 
 module.exports = {
-  // get_specific_time: async(req, res)=>{
-  //   let token = Token.authorizationToken(req.headers);
-  //     if(token){
-  //       let response = new Response()
-  //       try {
-  //         response.setData(await sapiRepositories.getSapiOnSpecificTime())
-  //       } catch (e) {
-  //         response.setStatus(false)
-  //         response.setMessage(e)
-  //       }
-  //       res.json(response)  
-  //     }else{
-  //       res.json(response.unAuthorized());
-  //     }
-  // },
   getWeather: async(req, res)=>{ 
     
     let response = new Response()
@@ -31,12 +16,9 @@ module.exports = {
       response.setData(await tanamanRepositories.getWeather(req.params.city))
     }catch(e){
       response.setStatus(false)
-      response.setMessage(e)
+      response.setMessage(JSON.stringify(e))
     }
     res.json(response) 
-    // return "sdsd"
-    
-
   },
 
   getnotification: async(req, res)=>{ 
@@ -44,18 +26,15 @@ module.exports = {
     if(token){
     let response = new Response()
     try{
-      // response.setData(await tananmanRepositories.streamUpdateData(req.body.kelembaban,req.body.ph,req.body.status,req.params.id))
       response.setData(await tanamanRepositories.getnotification())
     }catch(e){
       response.setStatus(false)
-      response.setMessage(e)
+      response.setMessage(JSON.stringify(e))
     }
-    res.json(response) 
-    // return "sdsd"
+    res.json(response)
     }else{
         res.json(response.unAuthorized());
       }
-
   },
 
   getDataToday : async(req,res)=>{
@@ -69,7 +48,7 @@ module.exports = {
           response.setData(await tanamanRepositories.getTanamanOnSpecificTime(req.body.idTanaman,yesterday.toISOString(),today.toISOString()))
         } catch (e) {
           response.setStatus(false)
-          response.setMessage(e)
+          response.setMessage(JSON.stringify(e))
         }
         res.json(response)  
       }else{
@@ -90,7 +69,7 @@ module.exports = {
           response.setData(await tanamanRepositories.getTanamanOnSpecificTime(req.body.idTanaman,start,end))
         } catch (e) {
           response.setStatus(false)
-          response.setMessage(e)
+          response.setMessage(JSON.stringify(e))
         }
         res.json(response)  
       }else{
@@ -107,7 +86,7 @@ module.exports = {
           response.setData(await tanamanRepositories.getTanamanByFarmers(result_decode._doc._id))
         } catch (e) {
           response.setStatus(false)
-          response.setMessage(e)
+          response.setMessage(JSON.stringify(e))
         }
         res.json(response) 
     }else{
@@ -122,7 +101,7 @@ module.exports = {
           response.setData(await tanamanRepositories.getRequestTanaman())
         } catch (e) {
           response.setStatus(false)
-          response.setMessage(e)
+          response.setMessage(JSON.stringify(e))
         }
         res.json(response)
     }else{
@@ -137,7 +116,7 @@ module.exports = {
           response.setData(await tanamanRepositories.getAllTanaman())
         } catch (e) {
           response.setStatus(false)
-          response.setMessage(e)
+          response.setMessage(JSON.stringify(e))
         }
         res.json(response) 
     }else{
@@ -147,11 +126,10 @@ module.exports = {
   data_update: async(req, res)=>{
     let response = new Response()
     try{
-      // response.setData(await tananmanRepositories.streamUpdateData(req.body.kelembaban,req.body.ph,req.body.status,req.params.id))
       response.setData(await tanamanRepositories.streamUpdateData(req.body.kelembabanTanah, req.body.ph, req.body.kelembabanUdara, req.body.suhuUdara, req.body.kondisi, req.body.status, req.params.id))
     }catch(e){
       response.setStatus(false)
-      response.setMessage(e)
+      response.setMessage(JSON.stringify(e))
     }
     res.json(response) 
   },
@@ -161,7 +139,7 @@ module.exports = {
       response.setData(await tanamanRepositories.updateTanaman(req.params.id, req.body))
     }catch(e){
       response.setStatus(false)
-      response.setMessage(e)
+      response.setMessage(JSON.stringify(e))
     }
     res.json(response)
   },
@@ -171,7 +149,7 @@ module.exports = {
       response.setData(await tanamanRepositories.deleteTanaman(req.params.id))
     }catch(e){
       response.setStatus(false)
-      response.setMessage(e)
+      response.setMessage(JSON.stringify(e))
     }
     res.json(response)
   },
@@ -183,7 +161,7 @@ module.exports = {
           response.setData(await tanamanRepositories.detailTanaman(req.params.id))
         } catch (e) {
           response.setStatus(false)
-          response.setMessage(e)
+          response.setMessage(JSON.stringify(e))
         }
         res.json(response)  
       }else{
@@ -202,7 +180,7 @@ module.exports = {
           response.setData(await tanamanRepositories.createTanaman(result_decode._doc._id,req.body.namaTanaman,req.body.luasLahan,req.body.lokasiLahan, req.body.spesies, req.body.tanggal))
         } catch (e) {
           response.setStatus(false)
-          response.setMessage(e)
+          response.setMessage(JSON.stringify(e))
         }
         res.json(response) 
     }else{
