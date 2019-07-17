@@ -4,10 +4,12 @@ var config = require('../config/database');
 require('../config/passport')(passport);
 var jwt = require('jsonwebtoken');
 var Tanaman = require("../models/tanaman");
+var Tipe = require("../models/tipetanaman");
 const socketApp = require('../socket/socket-app');
 var ObjectId = require('mongoose').Types.ObjectId;
 var farmerRepositories = require('../repositories/farmerRepositories');
 var userRepositories = require('../repositories/userRepositories');
+var tipeRepositories = require('../repositories/tipeRepositories');
 var notificationRepositories = require('../repositories/notificationRepositories');
 var cuacaRepositories = require('../repositories/cuacaRepositories');
 var Constants = require('../services/Constants');
@@ -15,18 +17,18 @@ const axios = require('axios');
 
 var admin = require("firebase-admin");
 var rekomendasi = [
-  "Rekomendasi 1",
-  "Rekomendasi 2",
-  "Rekomendasi 3",
-  "Rekomendasi 4",
-  "Rekomendasi 5",
-  "Rekomendasi 6",
-  "Rekomendasi 7",
-  "Rekomendasi 8",
-  "Rekomendasi 9",
-  "Rekomendasi 10",
-  "Rekomendasi 11",
-  "Rekomendasi 12"
+  "Fertilizers that need to be added are NPK Mutiara of 117.6 gr/m2 or 98.8 gr/m2",
+  "Fertilizers that need to be added are NPK Mutiara of 117.6 gr/m2 or 98.8 gr/m2",
+  "pupuk npk 1,21 gr/ polybag + 0,2 gr/polybag + 0,1 gr/polybag",
+  "Fertilizers that need to be added are NPK Mutiara of 117.6 gr/m2 or 102.3 gr/m2 or 65.8 gr/m2",
+  "The condition of nutrients in the soil is optimal",
+  "The condition of nutrients in the soil is optimal",
+  "The condition of nutrients in the soil is optimal",
+  "The condition of nutrients in the soil is optimal",
+  "Fertilizers that need to be added are NPK Mutiara of 117.6 gr/m2 or 125.2 gr/m2",
+  "Fertilizers that need to be added are NPK Mutiara of 117.6 gr/m2 or 102.3 gr/m2",
+  "Fertilizers that need to be added are NPK Mutiara of 117.6 gr/m2",
+  "The condition of nutrients in the soil is optimal"
 ];
 
 var serviceAccount = require("../android-e71ee-firebase-adminsdk-ot8mj-1f113f90c4.json");
@@ -192,6 +194,8 @@ const tanamanRepositories = {
     /**
      * condition dairy plants healty status
      */
+    // var type = await Tipe.findById("5d2dde4018e3df05a898788a");
+
     var tmpKelembabanTanah = Number(kelembabanTanah)
     var tmpPh = Number(tmpPh)
     var tmpKelembabanUdara = Number(kelembabanUdara)
@@ -213,7 +217,6 @@ const tanamanRepositories = {
       volume = 0
     }
     if (tmpPh >= 4 && tmpPh < 4,5){
-      console.log("true")
       statusPh = 0
       indeksRekomendasi = 0
     }
@@ -230,19 +233,19 @@ const tanamanRepositories = {
       indeksRekomendasi = 3
     }
     else if (tmpPh >= 6 && tmpPh <6,5){
-      statusPh = 0
+      statusPh = 1
       indeksRekomendasi = 4
     }
     else if (tmpPh >= 6,5 && tmpPh <7){
-      statusPh = 0
+      statusPh = 1
       indeksRekomendasi = 5
     }
     else if (tmpPh >= 7 && tmpPh <7,5){
-      statusPh = 0
+      statusPh = 1
       indeksRekomendasi = 6
     }
     else if (tmpPh >= 7,5 && tmpPh <8){
-      statusPh = 0
+      statusPh = 1
       indeksRekomendasi = 7
     }
     else if (tmpPh >= 8 && tmpPh <8,5){
@@ -258,7 +261,7 @@ const tanamanRepositories = {
       indeksRekomendasi = 10
     }
     else if (tmpPh >= 9,5 && tmpPh <10){
-      statusPh = 0
+      statusPh = 1
       indeksRekomendasi = 11
     }else{
       statusPh = 0
@@ -271,7 +274,7 @@ const tanamanRepositories = {
       if (registrationToken) {
         var payload = {
           notification: {
-            title: tanamanInform.namaTanaman + " Butuh Pupuk !!",
+            title: tanamanInform.namaTanaman + " Need Fertilization !!",
             body: rekomendasi[indeksRekomendasi]
           }
         };

@@ -36,8 +36,7 @@ var TanamanSchema = new Schema({
     required: true
   },
   spesies: {
-    type: String,
-    required: true
+    type: Schema.Types.ObjectId,
   },
   tanggal: {
     type: Date,

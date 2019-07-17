@@ -21,6 +21,7 @@ var tanaman = require('./routes/tanaman');
 var perangkat = require('./routes/perangkat');
 var cuaca = require('./routes/cuaca');
 var notification = require('./routes/notification');
+var tipe = require('./routes/tipe');
 var app = express();
 // var server = app.listen(3000);
 // var io = require('socket.io').listen(server);
@@ -59,8 +60,9 @@ app.get('/', function(req, res) {
 app.use('/api/user', api);
 app.use('/api/tanaman', tanaman);
 app.use('/api/perangkat', perangkat);
-app.use('/api/cuaca', cuaca)
-app.use('/api/notification', notification)
+app.use('/api/cuaca', cuaca);
+app.use('/api/notification', notification);
+app.use('/api/tipe', tipe);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
